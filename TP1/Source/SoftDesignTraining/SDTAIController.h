@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "SDTUtils.h"
 
 #include "SDTAIController.generated.h"
 
@@ -16,4 +17,8 @@ class SOFTDESIGNTRAINING_API ASDTAIController : public AAIController
     GENERATED_BODY()
 public:
     virtual void Tick(float deltaTime) override;
+
+    virtual bool WallDetection(APawn* pawn, UWorld* world, float hitDistance);
+
+    virtual void PawnMovement(APawn* pawn, FVector acc, float deltaTime);
 };
