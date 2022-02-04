@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "SDTAIController.h"
+#include "PhysicsHelpers.h"
 #include "SoftDesignTraining.h"
 #include <SoftDesignTraining/SDTUtils.h>
 
@@ -9,19 +10,22 @@ void ASDTAIController::Tick(float deltaTime)
     //ASDTAIController::MoveForward(1.0f);
     APawn* const pawn = GetPawn();
     UWorld* world = GetWorld();
-    //PhysicsHelper newPhysicsHelper(world);
+    PhysicsHelpers physicsHelper(world);
 
     if (pawn)
     {
         FVector pawnLocation = pawn->GetActorLocation();
         FRotator orientation = pawn->GetActorRotation();
         ASDTAIController::FindDirection(orientation, pawnLocation, world);
-        //PhysicsHelper.CastRay(selfPosition, targetActor->GetActorLocation(), hitResult, true);
         if (ASDTAIController::WallDetected(orientation, pawnLocation, world))
         {
             orientation = orientation.Add(0.0f, preferedDirection * 10.0f, 0.0f);
             pawn->SetActorRotation(orientation);
         }
+
+        if (ASDTAIController::PickupDetected(orientation, pawnLocation, world, physicsHelper)) {
+        }
+
         ASDTAIController::PawnMovement(orientation, pawn, deltaTime);
     }
 }
@@ -83,12 +87,14 @@ bool ASDTAIController::WallDetected(FRotator orientation, FVector pawnLocation, 
 }
 
 
-bool ASDTAIController::CollectibleDetection(APawn* pawn, UWorld* world)
+bool ASDTAIController::PickupDetected(FRotator orientation, FVector pawnLocation, UWorld* world, PhysicsHelpers physicsHelper)
 {
-    FVector pawnDirection = pawn->GetLastMovementInputVector();
-    FVector pawnLocation = pawn->GetActorLocation();
-    FVector targetLocation = pawnLocation + pawnDirection.GetSafeNormal() * hitDistance;
-    return SDTUtils::Raycast(world, pawnLocation, targetLocation);
+    TArray<struct FHitResult> hitResult;
+    FVector targetLocation = pawnLocation + orientation.Vector().GetSafeNormal() * visionDistance;
+    physicsHelper.SphereCast(pawnLocation, targetLocation, radiusDetection, hitResult, drawDebug);
+
+    return true;
+
 }
 
 
