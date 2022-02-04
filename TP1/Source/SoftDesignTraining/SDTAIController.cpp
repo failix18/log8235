@@ -2,6 +2,7 @@
 
 #include "SDTAIController.h"
 #include "SoftDesignTraining.h"
+#include <SoftDesignTraining/SDTUtils.h>
 
 void ASDTAIController::Tick(float deltaTime)
 {
@@ -12,47 +13,90 @@ void ASDTAIController::Tick(float deltaTime)
 
     if (pawn)
     {
-
-        
-        FVector acc = FVector(100.0f, 0.0f, 0.0f);
+        FVector pawnLocation = pawn->GetActorLocation();
+        FRotator orientation = pawn->GetActorRotation();
+        ASDTAIController::FindDirection(orientation, pawnLocation, world);
         //PhysicsHelper.CastRay(selfPosition, targetActor->GetActorLocation(), hitResult, true);
-        bool wallDetected = ASDTAIController::WallDetection(pawn, world, 200.0f);
-        if (wallDetected)
+        if (ASDTAIController::WallDetected(orientation, pawnLocation, world))
         {
-            acc = FVector(100.0f, 100.0f, 0.0f);
+            orientation = orientation.Add(0.0f, preferedDirection * 10.0f, 0.0f);
+            pawn->SetActorRotation(orientation);
         }
-        ASDTAIController::PawnMovement(pawn, acc, deltaTime);
+        ASDTAIController::PawnMovement(orientation, pawn, deltaTime);
     }
 }
 
-bool ASDTAIController::WallDetection(APawn* pawn, UWorld* world, float hitDistance)
+void ASDTAIController::FindDirection(FRotator orientation, FVector pawnLocation, UWorld* world)
 {
-    FVector pawnDirection = pawn->GetLastMovementInputVector();
-    FVector pawnLocation = pawn->GetActorLocation();
-    FVector targetLocation = pawnLocation + pawnDirection.GetSafeNormal();
+    FVector leftTargetLocation = pawnLocation + orientation.Add(0.0f, -45.0f, 0.0f).Vector().GetSafeNormal() * 300.0f;
+    bool leftHit = SDTUtils::Raycast(world, pawnLocation, leftTargetLocation);
+
+    FVector rightTargetLocation = pawnLocation + orientation.Add(0.0f, 45.0f, 0.0f).Vector().GetSafeNormal() * 300.0f;
+    bool rightHit = SDTUtils::Raycast(world, pawnLocation, rightTargetLocation);
+
+    if (leftHit)
+    {
+        if (!rightHit)
+        {
+            preferedDirection = 1.0f;
+        }
+        else
+        {
+            RefineDirection(orientation, pawnLocation, world);
+        }
+    }
+    else if (rightHit)
+    {
+        if (!leftHit)
+        {
+            preferedDirection = -1.0f;
+        }
+        else
+        {
+            RefineDirection(orientation, pawnLocation, world);
+        }
+    }
+}
+
+void ASDTAIController::RefineDirection(FRotator orientation, FVector pawnLocation, UWorld* world)
+{
+    FVector leftTargetLocation = pawnLocation + orientation.Add(0.0f, -90.0f, 0.0f).Vector().GetSafeNormal() * 300.0f;
+    bool leftHit = SDTUtils::Raycast(world, pawnLocation, leftTargetLocation);
+
+    FVector rightTargetLocation = pawnLocation + orientation.Add(0.0f, 90.0f, 0.0f).Vector().GetSafeNormal() * 300.0f;
+    bool rightHit = SDTUtils::Raycast(world, pawnLocation, rightTargetLocation);
+
+    if (leftHit && !rightHit)
+    {
+        preferedDirection = 1.0f;
+    }
+    else if (rightHit && !leftHit)
+    {
+        preferedDirection = -1.0f;
+    }
+}
+
+bool ASDTAIController::WallDetected(FRotator orientation, FVector pawnLocation, UWorld* world)
+{
+    FVector targetLocation = pawnLocation + orientation.Vector().GetSafeNormal() * hitDistance;
     return SDTUtils::Raycast(world, pawnLocation, targetLocation);
 }
 
-void ASDTAIController::PawnMovement(APawn* pawn, FVector acc, float deltaTime)
+
+bool ASDTAIController::CollectibleDetection(APawn* pawn, UWorld* world)
 {
-    
-    FVector currentSpeed = pawn->GetLastMovementInputVector();
-    FVector newSpeed = FVector(acc.X * deltaTime, acc.Y * deltaTime, acc.Z * deltaTime);
-    float maxSpeed = pawn->GetMovementComponent()->GetMaxSpeed();
-    float normSpeed = std::sqrt(std::pow(newSpeed.X, 2) + std::pow(newSpeed.Y, 2));
-
-    if (normSpeed > maxSpeed)
-    {
-        newSpeed = currentSpeed;
-    }
-
-    pawn->AddMovementInput(newSpeed);
-    float currentAngle = std::atan2(currentSpeed.Y, currentSpeed.X);
-    float newAngle = std::atan2(newSpeed.Y, newSpeed.X);
-
-    FQuat rotation = FQuat(FVector(0.0f, 0.0f, 1.0f), newAngle - currentAngle);
-    pawn->AddActorWorldRotation(rotation);
+    FVector pawnDirection = pawn->GetLastMovementInputVector();
+    FVector pawnLocation = pawn->GetActorLocation();
+    FVector targetLocation = pawnLocation + pawnDirection.GetSafeNormal() * hitDistance;
+    return SDTUtils::Raycast(world, pawnLocation, targetLocation);
 }
 
 
-
+void ASDTAIController::PawnMovement(FRotator orientation, APawn* pawn, float deltaTime)
+{
+    if (speed > maxSpeed)
+    {
+        speed = maxSpeed;
+    }
+    pawn->AddMovementInput(speed * orientation.Vector().GetSafeNormal());
+}
