@@ -3,6 +3,7 @@
 #include "SDTAIController.h"
 #include "PhysicsHelpers.h"
 #include "SoftDesignTraining.h"
+#include "DrawDebugHelpers.h"
 #include <SoftDesignTraining/SDTUtils.h>
 
 void ASDTAIController::Tick(float deltaTime)
@@ -17,13 +18,12 @@ void ASDTAIController::Tick(float deltaTime)
         FVector pawnLocation = pawn->GetActorLocation();
         FRotator orientation = pawn->GetActorRotation();
         ASDTAIController::FindDirection(orientation, pawnLocation, world);
-        if (ASDTAIController::WallDetected(orientation, pawnLocation, world))
-        {
+        if (ASDTAIController::PickupDetected(orientation, pawnLocation, world, physicsHelper, pawn)) {
+             orientation = orientation.Add(0.0f, preferedDirection * 10.0f, 0.0f);
+             pawn->SetActorRotation(orientation);
+        } else if (ASDTAIController::WallDetected(orientation, pawnLocation, world)){
             orientation = orientation.Add(0.0f, preferedDirection * 10.0f, 0.0f);
             pawn->SetActorRotation(orientation);
-        }
-
-        if (ASDTAIController::PickupDetected(orientation, pawnLocation, world, physicsHelper)) {
         }
 
         ASDTAIController::PawnMovement(orientation, pawn, deltaTime);
@@ -87,19 +87,44 @@ bool ASDTAIController::WallDetected(FRotator orientation, FVector pawnLocation, 
 }
 
 
-bool ASDTAIController::PickupDetected(FRotator orientation, FVector pawnLocation, UWorld* world, PhysicsHelpers physicsHelper)
+bool ASDTAIController::PickupDetected(FRotator orientation, FVector pawnLocation, UWorld* world, PhysicsHelpers physicsHelper, APawn* pawn)
 {
     TArray<struct FHitResult> hitResult;
     FVector targetLocation = pawnLocation + orientation.Vector().GetSafeNormal() * visionDistance;
     physicsHelper.SphereCast(pawnLocation, targetLocation, radiusDetection, hitResult, drawDebug);
+    
+    int hitResSize = hitResult.Num();
+    FVector pickupLocation;
+    for (int i = 0; i < hitResSize; ++i) {
+        if (hitResult[i].GetActor()->GetName().Contains("SDTCollectible")) {
+            TArray<struct FHitResult> rayCastHitResult;
+            pickupLocation = hitResult[i].ImpactPoint;
+            FVector pawnToPickup = pickupLocation - pawnLocation; 
 
-    return true;
 
+            physicsHelper.CastRay(pawnLocation, pickupLocation, rayCastHitResult,drawDebug);
+            if (rayCastHitResult.Num() != 0) {
+                if (rayCastHitResult[0].GetActor()->GetName().Contains("SDTCollectible")) {
+                    DrawDebugDirectionalArrow(world, pawnLocation, pickupLocation, 100, FColor::Red, false, -1.0f, 000, 5.0f);
+                    preferedDirection = orientation.Vector().CosineAngle2D(pawnToPickup) > 0 ? 1.0f : -1.0;
+                   /* FRotator orientation = pawn->GetActorRotation();
+                    pawn->SetActorRotation(orientation.Add(0.0f, orientation.Vector().CosineAngle2D(pawnToPickup), 0.0f));
+                    */
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
 }
-
+/*  float dot = pawnToPickup.X * targetLocation.X + pawnToPickup.Y * targetLocation.Y;
+           float det = pawnToPickup.X * targetLocation.Y - targetLocation.X * pawnToPickup.Y;
+           float angle = std::atan2(det, dot);*/
 
 void ASDTAIController::PawnMovement(FRotator orientation, APawn* pawn, float deltaTime)
 {
+    speed = speed + std::sqrt(std::pow(acc.X, 2) + std::pow(acc.Y, 2)) * deltaTime;
     if (speed > maxSpeed)
     {
         speed = maxSpeed;

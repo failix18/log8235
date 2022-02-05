@@ -36,11 +36,11 @@ public:
 
     // Distance where the pawn sees
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AI, meta = (ClampMin = "10.0", ClampMax = "10000.0", UIMin = "10.0", UIMax = "10000.0"))
-        float visionDistance = 1000.0f;
+        float visionDistance = 2000.0f;
 
     // Radius of the sphere cast sent
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AI, meta = (ClampMin = "10.0", ClampMax = "200.0", UIMin = "10.0", UIMax = "200.0"))
-        float radiusDetection = 200.0f;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AI, meta = (ClampMin = "10.0", ClampMax = "10000.0", UIMin = "10.0", UIMax = "10000.0"))
+        float radiusDetection = 500.0f;
 
     // Radius of the sphere cast sent
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AI)
@@ -48,13 +48,13 @@ public:
 
     // Acceleration vector
     FVector acc = FVector(accX, accY, 0.0f);
-    float speed = 500.0f;
+    float speed = 100.0f;
 
     // Helps the pawn decide if he goes left or right
     float preferedDirection = 1.0f;
 
     bool WallDetected(FRotator orientation, FVector pawnLocation, UWorld* world);
-    bool PickupDetected(FRotator orientation, FVector pawnLocation, UWorld* world, PhysicsHelpers physicsHelper);
+    bool PickupDetected(FRotator orientation, FVector pawnLocation, UWorld* world, PhysicsHelpers physicsHelper, APawn* pawn);
 
     void FindDirection(FRotator orientation, FVector pawnLocation, UWorld* world);
     void RefineDirection(FRotator orientation, FVector pawnLocation, UWorld* world);
