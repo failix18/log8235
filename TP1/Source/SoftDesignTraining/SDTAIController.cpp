@@ -19,9 +19,10 @@ void ASDTAIController::Tick(float deltaTime)
         FRotator orientation = pawn->GetActorRotation();
         ASDTAIController::FindDirection(orientation, pawnLocation, world);
         if (ASDTAIController::PickupDetected(orientation, pawnLocation, world, physicsHelper, pawn)) {
-             orientation = orientation.Add(0.0f, preferedDirection * 10.0f, 0.0f);
+             orientation = orientation.Add(0.0f, preferedDirection * 1.0f, 0.0f);
              pawn->SetActorRotation(orientation);
-        } else if (ASDTAIController::WallDetected(orientation, pawnLocation, world)){
+        }else if (ASDTAIController::WallDetected(orientation, pawnLocation, world, physicsHelper)){
+            //preferedDirection = std::rand() % 2 == 0 ? -1.0f : 1.0f;
             orientation = orientation.Add(0.0f, preferedDirection * 10.0f, 0.0f);
             pawn->SetActorRotation(orientation);
         }
@@ -80,47 +81,67 @@ void ASDTAIController::RefineDirection(FRotator orientation, FVector pawnLocatio
     }
 }
 
-bool ASDTAIController::WallDetected(FRotator orientation, FVector pawnLocation, UWorld* world)
+bool ASDTAIController::WallDetected(FRotator orientation, FVector pawnLocation, UWorld* world, PhysicsHelpers physicsHelper)
 {
+    TArray<struct FHitResult> rayCastHitResult;
     FVector targetLocation = pawnLocation + orientation.Vector().GetSafeNormal() * hitDistance;
-    return SDTUtils::Raycast(world, pawnLocation, targetLocation);
+    return physicsHelper.CastRay(pawnLocation, targetLocation, rayCastHitResult, drawDebug);
+
+   /* for (int i = 0; i < rayCastHitResult.Num(); ++i) {
+        if (rayCastHitResult[i].GetActor()->GetName().Contains("Wall")) {
+            return true;
+        }
+    }
+    return false;*/
 }
 
 
 bool ASDTAIController::PickupDetected(FRotator orientation, FVector pawnLocation, UWorld* world, PhysicsHelpers physicsHelper, APawn* pawn)
 {
-    TArray<struct FHitResult> hitResult;
+    TArray<struct FHitResult> sphereHitResult;
     FVector targetLocation = pawnLocation + orientation.Vector().GetSafeNormal() * visionDistance;
-    physicsHelper.SphereCast(pawnLocation, targetLocation, radiusDetection, hitResult, drawDebug);
+    FVector startLocation = pawnLocation + orientation.Vector().GetSafeNormal() * radiusDetection;
+    physicsHelper.SphereCast(startLocation, targetLocation, radiusDetection, sphereHitResult, drawDebug);
     
-    int hitResSize = hitResult.Num();
-    FVector pickupLocation;
-    for (int i = 0; i < hitResSize; ++i) {
-        if (hitResult[i].GetActor()->GetName().Contains("SDTCollectible")) {
-            TArray<struct FHitResult> rayCastHitResult;
-            pickupLocation = hitResult[i].ImpactPoint;
-            FVector pawnToPickup = pickupLocation - pawnLocation; 
-
-
-            physicsHelper.CastRay(pawnLocation, pickupLocation, rayCastHitResult,drawDebug);
-            if (rayCastHitResult.Num() != 0) {
-                if (rayCastHitResult[0].GetActor()->GetName().Contains("SDTCollectible")) {
-                    DrawDebugDirectionalArrow(world, pawnLocation, pickupLocation, 100, FColor::Red, false, -1.0f, 000, 5.0f);
-                    preferedDirection = orientation.Vector().CosineAngle2D(pawnToPickup) > 0 ? 1.0f : -1.0;
-                   /* FRotator orientation = pawn->GetActorRotation();
-                    pawn->SetActorRotation(orientation.Add(0.0f, orientation.Vector().CosineAngle2D(pawnToPickup), 0.0f));
-                    */
-                    return true;
-                }
-            }
+    TArray<FVector> pickupLocations;
+    for (int i = 0; i < sphereHitResult.Num(); ++i) {
+        if (sphereHitResult[i].GetActor()->GetName().Contains("BP_SDTCollectible")) {
+            pickupLocations.Add(sphereHitResult[i].ImpactPoint);
         }
     }
 
+    for (int i = 0; i < pickupLocations.Num(); ++i) {
+        FVector pawnToPickup = pickupLocations[i] - pawnLocation;
+        TArray<struct FHitResult> rayCastHitResult;
+        physicsHelper.CastRay(pawnLocation, pickupLocations[i], rayCastHitResult, drawDebug);
+        bool wallBlocking = false;
+        for (int j = 0; j < rayCastHitResult.Num(); ++j) {
+            if (rayCastHitResult[j].GetActor()->GetName().Contains("Wall")) {
+                wallBlocking = true;
+            }
+        }
+
+        if (!wallBlocking) {
+            DrawDebugDirectionalArrow(world, pawnLocation, pickupLocations[i], 100, FColor::Red, false, -1.0f, 000, 5.0f);
+            float angle = orientation.Vector().CosineAngle2D(pawnToPickup);
+           if (angle > 0.5) {
+                preferedDirection = angle;
+            } else if (angle < -0.5) {
+                preferedDirection = angle;
+            }
+            else {
+                preferedDirection = 0.0f;
+            }
+            //FRotator orientation = pawn->GetActorRotation();
+            //pawn->SetActorRotation(orientation.Add(0.0f, orientation.Vector().CosineAngle2D(pawnToPickup), 0.0f));
+
+            //preferedDirection = angle;
+            return true;
+        }
+
+    }
     return false;
 }
-/*  float dot = pawnToPickup.X * targetLocation.X + pawnToPickup.Y * targetLocation.Y;
-           float det = pawnToPickup.X * targetLocation.Y - targetLocation.X * pawnToPickup.Y;
-           float angle = std::atan2(det, dot);*/
 
 void ASDTAIController::PawnMovement(FRotator orientation, APawn* pawn, float deltaTime)
 {
