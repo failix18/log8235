@@ -1,0 +1,28 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UE4Editor-SoftDesignTraining.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"C:\Users\vince\Desktop\Cours polymtl\trimestre 1\INF8235\TP1\log8235\TP1\Intermediate\Build\Win64\SoftDesignTrainingEditor\Development\Engine\SharedPCH.Engine.ShadowErrors.h.obj"
+"C:\Users\vince\Desktop\Cours polymtl\trimestre 1\INF8235\TP1\log8235\TP1\Intermediate\Build\Win64\UE4Editor\Development\SoftDesignTraining\PhysicsHelpers.cpp.obj"
+"C:\Users\vince\Desktop\Cours polymtl\trimestre 1\INF8235\TP1\log8235\TP1\Intermediate\Build\Win64\UE4Editor\Development\SoftDesignTraining\SDTAIController.cpp.obj"
+"C:\Users\vince\Desktop\Cours polymtl\trimestre 1\INF8235\TP1\log8235\TP1\Intermediate\Build\Win64\UE4Editor\Development\SoftDesignTraining\SDTCollectible.cpp.obj"
+"C:\Users\vince\Desktop\Cours polymtl\trimestre 1\INF8235\TP1\log8235\TP1\Intermediate\Build\Win64\UE4Editor\Development\SoftDesignTraining\SDTUtils.cpp.obj"
+"C:\Users\vince\Desktop\Cours polymtl\trimestre 1\INF8235\TP1\log8235\TP1\Intermediate\Build\Win64\UE4Editor\Development\SoftDesignTraining\SoftDesignTraining.cpp.obj"
+"C:\Users\vince\Desktop\Cours polymtl\trimestre 1\INF8235\TP1\log8235\TP1\Intermediate\Build\Win64\UE4Editor\Development\SoftDesignTraining\SoftDesignTrainingCharacter.cpp.obj"
+"C:\Users\vince\Desktop\Cours polymtl\trimestre 1\INF8235\TP1\log8235\TP1\Intermediate\Build\Win64\UE4Editor\Development\SoftDesignTraining\SoftDesignTrainingGameMode.cpp.obj"
+"C:\Users\vince\Desktop\Cours polymtl\trimestre 1\INF8235\TP1\log8235\TP1\Intermediate\Build\Win64\UE4Editor\Development\SoftDesignTraining\SoftDesignTrainingMainCharacter.cpp.obj"
+"C:\Users\vince\Desktop\Cours polymtl\trimestre 1\INF8235\TP1\log8235\TP1\Intermediate\Build\Win64\UE4Editor\Development\SoftDesignTraining\SoftDesignTrainingPlayerController.cpp.obj"
+"C:\Users\vince\Desktop\Cours polymtl\trimestre 1\INF8235\TP1\log8235\TP1\Intermediate\Build\Win64\UE4Editor\Development\SoftDesignTraining\SDTAIController.gen.cpp.obj"
+"C:\Users\vince\Desktop\Cours polymtl\trimestre 1\INF8235\TP1\log8235\TP1\Intermediate\Build\Win64\UE4Editor\Development\SoftDesignTraining\SDTCollectible.gen.cpp.obj"
+"C:\Users\vince\Desktop\Cours polymtl\trimestre 1\INF8235\TP1\log8235\TP1\Intermediate\Build\Win64\UE4Editor\Development\SoftDesignTraining\SoftDesignTraining.init.gen.cpp.obj"
+"C:\Users\vince\Desktop\Cours polymtl\trimestre 1\INF8235\TP1\log8235\TP1\Intermediate\Build\Win64\UE4Editor\Development\SoftDesignTraining\SoftDesignTrainingCharacter.gen.cpp.obj"
+"C:\Users\vince\Desktop\Cours polymtl\trimestre 1\INF8235\TP1\log8235\TP1\Intermediate\Build\Win64\UE4Editor\Development\SoftDesignTraining\SoftDesignTrainingGameMode.gen.cpp.obj"
+"C:\Users\vince\Desktop\Cours polymtl\trimestre 1\INF8235\TP1\log8235\TP1\Intermediate\Build\Win64\UE4Editor\Development\SoftDesignTraining\SoftDesignTrainingMainCharacter.gen.cpp.obj"
+"C:\Users\vince\Desktop\Cours polymtl\trimestre 1\INF8235\TP1\log8235\TP1\Intermediate\Build\Win64\UE4Editor\Development\SoftDesignTraining\SoftDesignTrainingPlayerController.gen.cpp.obj"
+"C:\Users\vince\Desktop\Cours polymtl\trimestre 1\INF8235\TP1\log8235\TP1\Intermediate\Build\Win64\UE4Editor\Development\SoftDesignTraining\Default.rc2.res"
+/OUT:"C:\Users\vince\Desktop\Cours polymtl\trimestre 1\INF8235\TP1\log8235\TP1\Intermediate\Build\Win64\UE4Editor\Development\SoftDesignTraining\UE4Editor-SoftDesignTraining.lib"
+/INCLUDE:IMPLEMENT_MODULE_SoftDesignTraining

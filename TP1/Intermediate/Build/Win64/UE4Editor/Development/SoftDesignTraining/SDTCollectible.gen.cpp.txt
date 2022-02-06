@@ -1,0 +1,7 @@
+C:\Users\vince\Desktop\Cours polymtl\trimestre 1\INF8235\TP1\log8235\TP1\Intermediate\Build\Win64\UE4Editor\Development\SoftDesignTraining\Definitions.SoftDesignTraining.h
+C:\Program Files\Epic Games\UE_4.25\Engine\Source\Runtime\CoreUObject\Public\UObject/GeneratedCppIncludes.h
+C:\Program Files\Epic Games\UE_4.25\Engine\Source\Runtime\CoreUObject\Public\UObject/MetaData.h
+C:\Users\vince\Desktop\Cours polymtl\trimestre 1\INF8235\TP1\log8235\TP1\Source\SoftDesignTraining/SDTCollectible.h
+C:\Program Files\Epic Games\UE_4.25\Engine\Source\Runtime\Engine\Classes\Engine/StaticMeshActor.h
+C:\Program Files\Epic Games\UE_4.25\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\StaticMeshActor.generated.h
+C:\Users\vince\Desktop\Cours polymtl\trimestre 1\INF8235\TP1\log8235\TP1\Intermediate\Build\Win64\UE4Editor\Inc\SoftDesignTraining\SDTCollectible.generated.h
