@@ -57,6 +57,7 @@ public:
     bool WallDetected(FRotator orientation, FVector pawnLocation, UWorld* world, PhysicsHelpers physicsHelper);
     bool PickupDetected(FRotator orientation, FVector pawnLocation, UWorld* world, PhysicsHelpers physicsHelper, APawn* pawn);
     bool DeathTrapDetected(FRotator orientation, FVector pawnLocation, UWorld* world, PhysicsHelpers physicsHelper, APawn* pawn);
+    bool PlayerChasing(UWorld* world, FVector pawnLocation, PhysicsHelpers physicsHelper, APawn* pawn);
 
     void FindDirection(FRotator orientation, FVector pawnLocation, UWorld* world);
     void PawnMovement(FRotator orientation, APawn* pawn, float deltaTime);
