@@ -28,10 +28,12 @@ void ASDTAIController::Tick(float deltaTime)
              /*orientation = orientation.Add(0.0f, preferedDirection * 1.0f, 0.0f);
              pawn->SetActorRotation(orientation);*/
         }
-        if (ASDTAIController::WallDetected(orientation, pawnLocation, world, physicsHelper))
+        else if (ASDTAIController::WallDetected(orientation, pawnLocation, world, physicsHelper))
         {
             orientation = orientation.Add(0.0f, preferedDirection * 10.0f, 0.0f);
             pawn->SetActorRotation(orientation);
+            // Slowing down the AI to 2 m/s when a wall is detected
+            acc = speed > 200.0f ? FVector(0.0f, -2.5f, 0.0f) : FVector(0.0f, 0.0f, 0.0f);
         }
         else
         {
@@ -187,6 +189,7 @@ bool ASDTAIController::DeathTrapDetected(FRotator orientation, FVector pawnLocat
 void ASDTAIController::PawnMovement(FRotator orientation, APawn* pawn, float deltaTime)
 {
     speed = speed + std::sqrt(std::pow(acc.X, 2) + std::pow(acc.Y, 2)) * deltaTime;
+    // Ensures the AI doesn't go faster than max speed
     if (speed > maxSpeed)
     {
         speed = maxSpeed;
