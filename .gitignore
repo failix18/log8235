@@ -30,3 +30,10 @@
 *.exe
 *.out
 *.app
+
+# Generated file folder
+*/Binaries
+*/Content
+*/Intermediate
+*/Saved
+*.vs

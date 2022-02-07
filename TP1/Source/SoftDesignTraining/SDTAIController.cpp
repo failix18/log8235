@@ -33,11 +33,41 @@ void ASDTAIController::Tick(float deltaTime)
             orientation = orientation.Add(0.0f, preferedDirection * 10.0f, 0.0f);
             pawn->SetActorRotation(orientation);
         }
+        else
+        {
+            // Check spherical area around the pawn for the player character
+            TArray<FOverlapResult> results = SphereDetection(pawn, physicsHelper);
+            for (int i = 0; i < results.Num(); i++)
+            {
+                AActor* foundActor = results[i].GetActor();
+                if (foundActor->GetName() == "BP_SDTMainCharacter_C_0")
+                {
+                    // Player found
+                    FVector fleeVector = pawnLocation - foundActor->GetActorLocation();
+
+                    // Flee if won't flee into a wall
+                    if (!ASDTAIController::WallDetected(fleeVector.Rotation(), pawnLocation, world))
+                    {
+                        pawn->SetActorRotation(fleeVector.Rotation());
+                    }
+                }
+            }
+        }
 
         ASDTAIController::PawnMovement(orientation, pawn, deltaTime);
     }
 }
 
+// Return all actors within its radius
+TArray<FOverlapResult> ASDTAIController::SphereDetection(APawn const* pawn, PhysicsHelpers& physicHelper) const
+{
+    TArray<FOverlapResult> outResults;
+    physicHelper.SphereOverlap(pawn->GetActorLocation(), visionDistance, outResults, true);
+
+    return outResults;
+}
+
+// Find prefered (no obstacle) direction (left or right) to turn toward
 void ASDTAIController::FindDirection(FRotator orientation, FVector pawnLocation, UWorld* world)
 {
     FVector leftTargetLocation = pawnLocation + orientation.Add(0.0f, -90.0f, 0.0f).Vector().GetSafeNormal() * 400.0f;
