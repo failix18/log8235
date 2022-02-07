@@ -53,6 +53,8 @@ public:
     // Helps the pawn decide if he goes left or right
     float preferedDirection = 1.0f;
 
+    TArray<FOverlapResult> SphereDetection(APawn const* pawn, PhysicsHelpers& physicHelper) const;
+
     bool WallDetected(FRotator orientation, FVector pawnLocation, UWorld* world);
     bool PickupDetected(FRotator orientation, FVector pawnLocation, UWorld* world, PhysicsHelpers physicsHelper);
 
