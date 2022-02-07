@@ -45,11 +45,24 @@ void ASDTAIController::Tick(float deltaTime)
                     // Player found
                     FVector fleeVector = pawnLocation - foundActor->GetActorLocation();
 
-                    // Flee if won't flee into a wall
-                    if (!ASDTAIController::WallDetected(fleeVector.Rotation(), pawnLocation, world, physicsHelper))
-                    {
-                        pawn->SetActorRotation(fleeVector.Rotation());
+                    TArray<struct FHitResult> rayCastHitResult;
+                    physicsHelper.CastRay(pawnLocation, foundActor->GetActorLocation(), rayCastHitResult, drawDebug);
+                    bool wallBlocking = false;
+                    for (int j = 0; j < rayCastHitResult.Num(); ++j) {
+                        if (!rayCastHitResult[j].GetActor()->GetName().Contains("BP_SDTCollectible")) {
+                            wallBlocking = true;
+                        }
                     }
+
+                    if (!wallBlocking) {
+                        // Flee if won't flee into a wall
+                        if (!ASDTAIController::WallDetected(fleeVector.Rotation(), pawnLocation, world, physicsHelper))
+                        {
+                            pawn->SetActorRotation(fleeVector.Rotation());
+                        }
+                    }
+
+                    
                 }
             }
         }
