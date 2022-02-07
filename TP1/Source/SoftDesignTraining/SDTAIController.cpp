@@ -46,7 +46,7 @@ void ASDTAIController::Tick(float deltaTime)
                     FVector fleeVector = pawnLocation - foundActor->GetActorLocation();
 
                     // Flee if won't flee into a wall
-                    if (!ASDTAIController::WallDetected(fleeVector.Rotation(), pawnLocation, world))
+                    if (!ASDTAIController::WallDetected(fleeVector.Rotation(), pawnLocation, world, physicsHelper))
                     {
                         pawn->SetActorRotation(fleeVector.Rotation());
                     }
@@ -62,7 +62,7 @@ void ASDTAIController::Tick(float deltaTime)
 TArray<FOverlapResult> ASDTAIController::SphereDetection(APawn const* pawn, PhysicsHelpers& physicHelper) const
 {
     TArray<FOverlapResult> outResults;
-    physicHelper.SphereOverlap(pawn->GetActorLocation(), visionDistance, outResults, true);
+    physicHelper.SphereOverlap(pawn->GetActorLocation(), visionDistance, outResults, drawDebug);
 
     return outResults;
 }
