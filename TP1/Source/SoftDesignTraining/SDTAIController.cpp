@@ -6,6 +6,8 @@
 #include "DrawDebugHelpers.h"
 #include <SoftDesignTraining/SDTUtils.h>
 #include <SoftDesignTraining/SDTCollectible.h>
+#include <SoftDesignTraining/SoftDesignTrainingMainCharacter.h>
+
 
 void ASDTAIController::Tick(float deltaTime)
 {
@@ -47,6 +49,14 @@ void ASDTAIController::Tick(float deltaTime)
                     // Player found
                     FVector fleeVector = pawnLocation - foundActor->GetActorLocation();
 
+                    // Chase instead of fleeing if player is vulnerable
+                    if (!static_cast<ASoftDesignTrainingMainCharacter*>(foundActor)->IsPoweredUp())
+                    {
+                        fleeVector *= -1;
+                    }
+                    
+
+                    // Check if has line of sight on player
                     TArray<struct FHitResult> rayCastHitResult;
                     physicsHelper.CastRay(pawnLocation, foundActor->GetActorLocation(), rayCastHitResult, drawDebug);
                     bool wallBlocking = false;
@@ -56,12 +66,10 @@ void ASDTAIController::Tick(float deltaTime)
                         }
                     }
 
-                    if (!wallBlocking) {
-                        // Flee if won't flee into a wall
-                        if (!ASDTAIController::WallDetected(fleeVector.Rotation(), pawnLocation, world, physicsHelper))
-                        {
-                            pawn->SetActorRotation(fleeVector.Rotation());
-                        }
+                    // Change direction if has LoS on player and won't move into a wall
+                    if (!wallBlocking && !ASDTAIController::WallDetected(fleeVector.Rotation(), pawnLocation, world, physicsHelper))
+                    {
+                        pawn->SetActorRotation(fleeVector.Rotation());
                     }
 
                     
