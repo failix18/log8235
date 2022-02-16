@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "SoftDesignTraining",
+			"Path": "C:\\TEMP\\log8235-main\\log8235-main\\TP2\\Projet_TP2\\Source\\SoftDesignTraining.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "SoftDesignTrainingEditor",
+			"Path": "C:\\TEMP\\log8235-main\\log8235-main\\TP2\\Projet_TP2\\Source\\SoftDesignTrainingEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}
