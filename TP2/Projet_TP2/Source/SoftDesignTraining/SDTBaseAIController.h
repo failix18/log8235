@@ -25,7 +25,7 @@ protected:
 
     bool m_ReachedTarget;
 private:
-    virtual void GoToBestTarget(float deltaTime) {};
+    virtual void GoToBestTarget(float deltaTime, UWorld* world, FVector pawnLocation) {};
     virtual void ChooseBehavior(float deltaTime) {};
-    virtual void ShowNavigationPath() {};
+    virtual void ShowNavigationPath(FVector pawnLocation) {};
 };

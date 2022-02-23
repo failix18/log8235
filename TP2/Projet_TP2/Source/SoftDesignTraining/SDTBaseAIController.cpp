@@ -2,6 +2,7 @@
 
 #include "SDTBaseAIController.h"
 #include "SoftDesignTraining.h"
+#include "PhysicsHelpers.h"
 
 
 ASDTBaseAIController::ASDTBaseAIController(const FObjectInitializer& ObjectInitializer)
@@ -15,16 +16,21 @@ ASDTBaseAIController::ASDTBaseAIController(const FObjectInitializer& ObjectIniti
 void ASDTBaseAIController::Tick(float deltaTime)
 {
     Super::Tick(deltaTime);
+    APawn* const pawn = GetPawn();
+    UWorld* world = GetWorld();
+    PhysicsHelpers physicsHelper(world);
+    FVector pawnLocation = pawn->GetActorLocation();
+    FRotator orientation = pawn->GetActorRotation();
 
     ChooseBehavior(deltaTime);
 
     if (m_ReachedTarget)
     {
-        GoToBestTarget(deltaTime);
+        GoToBestTarget(deltaTime, world, pawnLocation);
     }
     else
     {
-        ShowNavigationPath();
+        ShowNavigationPath(pawnLocation);
     }
 }
 
