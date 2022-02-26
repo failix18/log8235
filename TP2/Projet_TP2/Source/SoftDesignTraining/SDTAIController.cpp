@@ -12,6 +12,7 @@
 #include "EngineUtils.h"
 #include "cmath"
 #include "PhysicsHelpers.h"
+#include <Runtime/NavigationSystem/Public/NavigationSystem.h>
 
 #define PATH_FOLLOW_DEBUG
 #define SHORTCUT_SAMPLE_NUM 8
@@ -29,6 +30,7 @@ void ASDTAIController::GoToBestTarget(float deltaTime, UWorld* world, FVector pa
     PhysicsHelpers physicsHelper(GetWorld());
     physicsHelper.SphereOverlap(pawnLocation, 1000000, sphereHitResult, false);
 
+    FVector destination = FVector::ZeroVector;
     if (sphereHitResult.Num() > 0) {
         AActor* closestCollectible = sphereHitResult[0].GetActor();
         bool hasDetectedCollectible = false;
@@ -50,77 +52,59 @@ void ASDTAIController::GoToBestTarget(float deltaTime, UWorld* world, FVector pa
                 }
             }
         }
+        destination = closestCollectible->GetActorLocation();
     }
-    // UNavigationPath* path = UNavigationSystemV1::FindPathToLocationSynchronously(this, GetActorLocation(), destination);
-    // if(!path || !path->GetPath().IsValid() || path->GetPath()->IsPartial() || path->GetPath()->GetPathPoints().Num() == 0)
-    // {
-    //     GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Red, TEXT("INVALID DESTINATION USED"));
-    //     return;
-    // }
+    UNavigationPath* path = UNavigationSystemV1::FindPathToLocationSynchronously(this, GetPawn()->GetActorLocation(), destination);
+    if(!path || !path->GetPath().IsValid() || path->GetPath()->IsPartial() || path->GetPath()->GetPathPoints().Num() == 0)
+    {
+        GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Red, TEXT("INVALID DESTINATION USED"));
+        return;
+    }
 
-    // PathToFollow.Empty();
+    PathToFollow.Empty();
 
-    // for(FNavPathPoint& point : path->GetPath()->GetPathPoints())
-    //     PathToFollow.Push(point.Location);
+    for(FNavPathPoint& point : path->GetPath()->GetPathPoints())
+        PathToFollow.Push(point.Location);
 
-    // CurrentDestinationIndex = 0;
-    //TArray<AActor*> actors = world->GetCurrentLevel()->Actors;
-    /*if (actors.Num() > 0) {
-        AActor* closestCollectible = actors[0];
-        bool hasDetectedCollectible = false;
-        float minDistanceToCollectible = 99999999;
-        for (int i = 0; i < actors.Num(); ++i) {
-            if (actors[i]->GetName().Contains("BP_SDTCollectible")) {
-                hasDetectedCollectible = false;
-                FVector position = actors[i]->GetActorLocation();
-                FVector pawnToCollectible = position - pawnLocation;
-                float x = pawnLocation.X;
-                float xs = pawnLocation.X;
-                double distance = sqrt(pow(pawnToCollectible.X, 2) + pow(pawnToCollectible.Y, 2));
-                if (distance < minDistanceToCollectible) {
-                    minDistanceToCollectible = distance;
-                    closestCollectible = actors[i];
-                }
+    // ASDTAIController::OnMoveToTarget();
+
+    ASDTAIController::ShowNavigationPath(pawnLocation);
+ 
+    if(PathToFollow.Num() > 0)
+    {
+        FVector velocity = FVector::ZeroVector;
+
+        if(CurrentDestinationIndex > -1 && CurrentDestinationIndex < PathToFollow.Num())
+        {
+
+#ifdef PATH_FOLLOW_DEBUG
+            {
+                DrawDebugSphere(
+                    GetWorld(),
+                    destination,
+                    20.f, 20,
+                    FColor(255, 0, 0),
+                    false, -1, 0
+                );
             }
-        }
-    }*/
-    
-//     if(PathToFollow.Num() > 0)
-//     {
-//         FVector velocity = FVector::ZeroVector;
+#endif //PATH_FOLLOW_DEBUG
 
-//         if(CurrentDestinationIndex > -1 && CurrentDestinationIndex < PathToFollow.Num())
-//         {
-//             FVector destination = ComputeDestination(pawnLocation);
+             UpdateDirection(deltaTime, destination - pawnLocation);
+             velocity = ComputeVelocity(deltaTime, destination);
+         }
+         else
+         {
+             velocity = ComputeVelocity(-deltaTime, pawnLocation + Direction);
 
-// #ifdef PATH_FOLLOW_DEBUG
-//             {
-//                 DrawDebugSphere(
-//                     GetWorld(),
-//                     destination,
-//                     20.f, 20,
-//                     FColor(255, 0, 0),
-//                     false, -1, 0
-//                 );
-//             }
-// #endif //PATH_FOLLOW_DEBUG
+             if(velocity.SizeSquared() < 0.1f)
+             {
+                 CurrentSpeed = 0.f;
+                 CurrentDestinationIndex = -1.f;
+             }
+         }
 
-//             UpdateDirection(deltaTime, destination - pawnLocation);
-//             velocity = ComputeVelocity(deltaTime, destination);
-//         }
-//         else
-//         {
-//             velocity = ComputeVelocity(-deltaTime, pawnLocation + Direction);
-
-//             if(velocity.SizeSquared() < 0.1f)
-//             {
-//                 CurrentSpeed = 0.f;
-//                 CurrentDestinationIndex = -1.f;
-//             }
-//         }
-
-//         ApplyVelocity(deltaTime, velocity);
-//     }
+         ApplyVelocity(deltaTime, velocity);
+     }
 }
 
 void ASDTAIController::OnMoveToTarget()
@@ -139,15 +123,6 @@ void ASDTAIController::ShowNavigationPath(FVector pawnLocation)
 {
     //Show current navigation path DrawDebugLine and DrawDebugSphere
     pawnLocation.Z += 50;
-
-    DrawDebugLine(
-        GetWorld(),
-        pawnLocation,
-        pawnLocation + Direction * 100.f,
-        FColor(255, 0, 0),
-        false, -1, 0,
-        12.333
-    );
 
     for(int i = 0; i < PathToFollow.Num() - 1; i++)
         DrawDebugLine(
