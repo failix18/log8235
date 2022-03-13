@@ -57,6 +57,9 @@ public:
     virtual void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result) override;
     void AIStateInterrupted();
 
+    // TODO on final cleanup: make this an enum for pretty? 0-2 -> collectible, chase, flee
+    float behavior = 0;
+
 protected:
     TArray<FVector> PathToFollow;
 

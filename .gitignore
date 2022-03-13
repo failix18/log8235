@@ -31,9 +31,9 @@
 *.out
 *.app
 
-# Generated file folder
-*/Binaries
+# Generated file folders
+Binaries
 */Content
-*/Intermediate
-*/Saved
+Intermediate
+Saved
 *.vs
