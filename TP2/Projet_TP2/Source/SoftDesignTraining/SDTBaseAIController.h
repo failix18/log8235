@@ -18,6 +18,9 @@ public:
 
     ASDTBaseAIController(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
     virtual void Tick(float deltaTime) override;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    float AnimationNavigationSpeed ;
 	
 protected:
     virtual void RotationUpdate(float deltaTime) {};

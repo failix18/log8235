@@ -43,6 +43,7 @@ void USDTPathFollowingComponent::FollowPathSegment(float DeltaTime)
     }
     else
     {
+        /*
         DrawDebugLine(
             GetWorld(),
             currentLocation,
@@ -50,13 +51,20 @@ void USDTPathFollowingComponent::FollowPathSegment(float DeltaTime)
             FColor(255, 0, 0),
             false, -1, 0,
             5.f
-        );
+        );*/
         //update navigation along path
         //CurrentTarget = pathToFollow[1];
-        FVector MoveVelocity = (CurrentTarget - currentLocation) / DeltaTime;
 
+
+        speed = speed + 250 * DeltaTime;
+        if (std::abs(speed) > 500.0f)
+        {
+            speed = (speed > 0) ? 500.0f : -500.0f;
+        }
+        FVector MoveVelocity = (CurrentTarget - currentLocation);
+        MoveVelocity = MoveVelocity.GetSafeNormal() * speed;
         PostProcessMove.ExecuteIfBound(this, MoveVelocity);
-        MovementComp->RequestDirectMove(MoveVelocity, true);
+        MovementComp->RequestDirectMove(MoveVelocity, false);
     }
 }
 
@@ -93,6 +101,7 @@ void USDTPathFollowingComponent::SetPath(FNavPathSharedPtr path)
     CollectibleReached = false;
     CurrentSegmentIndex = 0;
     SetMoveSegment(0);
+    speed = 100.0f;
 }
 
 bool USDTPathFollowingComponent::IsCollectibleReached()

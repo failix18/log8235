@@ -16,6 +16,7 @@ class SOFTDESIGNTRAINING_API USDTPathFollowingComponent : public UPathFollowingC
     bool CollectibleReached = false;
     int CurrentSegmentIndex = 1;
     FVector CurrentTarget = FVector::ZeroVector;
+    float speed = 0.0f;
 
 public:
     virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;

@@ -51,7 +51,11 @@ public:
     float RotationRate = 100.f;
 
     UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
-    float Acceleration = 300.f;
+    float Acceleration = 20.0f;
+
+    
+    
+
 
 public:
     virtual void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result) override;

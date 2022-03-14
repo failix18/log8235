@@ -20,6 +20,10 @@ void ASDTBaseAIController::Tick(float deltaTime)
     FVector pawnLocation = pawn->GetActorLocation();
     FRotator orientation = pawn->GetActorRotation();
 
+    FVector speedvect = pawn->GetMovementComponent()->Velocity;
+    AnimationNavigationSpeed = speedvect.Size();
+
+
     ChooseBehavior(deltaTime);
 
     if (m_ReachedTarget)
