@@ -13,6 +13,7 @@
 #include "cmath"
 #include "PhysicsHelpers.h"
 #include <Runtime/NavigationSystem/Public/NavigationSystem.h>
+#include <Runtime/NavigationSystem/Public/NavLinkComponent.h>
 
 #define PATH_FOLLOW_DEBUG
 #define SHORTCUT_SAMPLE_NUM 8
@@ -65,7 +66,22 @@ void ASDTAIController::GoToBestTarget(float deltaTime, UWorld* world, FVector pa
     }
 
     PathToFollow.Empty();
-
+    TArray<AActor*> navLinks;
+    for (TActorIterator<AActor> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+    {
+        AActor* act = Cast<AActor>(*ActorItr);
+        /*navLinks.Add(Cast<AActor>(*ActorItr));*/
+        if ((act)->GetName().Contains("NavLink")) {
+            /*GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, act->GetName());*/
+            UNavLinkComponent* NavLink = Cast<UNavLinkComponent>(act);
+            TArray<FNavigationLink> navLinks;
+            TArray<FNavigationSegmentLink> segLinks;
+            NavLink->GetNavigationLinksArray(navLinks,segLinks);
+            //FNavigationLink Link = NavLink->Links[0];
+            //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, Link.Left.ToString());
+        }
+    }
+    
     for(FNavPathPoint& point : path->GetPath()->GetPathPoints())
         PathToFollow.Push(point.Location);
 
@@ -102,7 +118,7 @@ void ASDTAIController::ShowNavigationPath(FVector pawnLocation)
             GetWorld(),
             PathToFollow[i],
             PathToFollow[i + 1],
-            FColor(0, 0, 255),
+            FColor(0, 0, 0),
             false, -1, 0,
             5.f
         );
@@ -120,13 +136,13 @@ void ASDTAIController::UpdatePlayerInteraction(float deltaTime)
         return;
 
     APawn* selfPawn = GetPawn();
+    
     if (!selfPawn)
         return;
 
     ACharacter* playerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
     if (!playerCharacter)
         return;
-
     FVector detectionStartLocation = selfPawn->GetActorLocation() + selfPawn->GetActorForwardVector() * m_DetectionCapsuleForwardStartingOffset;
     FVector detectionEndLocation = detectionStartLocation + selfPawn->GetActorForwardVector() * m_DetectionCapsuleHalfLength * 2;
 
