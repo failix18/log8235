@@ -58,27 +58,21 @@ void USDTPathFollowingComponent::FollowPathSegment(float DeltaTime)
         }
         else {
             MoveVelocity.Z = -75.0f;
+            InAir = true;
+        }
+        if (currentLocation.Z < 220.0f) {
+            InAir = false;
         }
         PostProcessMove.ExecuteIfBound(this, MoveVelocity);
-        InAir = true;
+ 
         AtJumpSegment = true;
         CurrentPawn->LaunchPawn(MoveVelocity, false, false);
 
     }
     else
     {
-        /*
-        DrawDebugLine(
-            GetWorld(),
-            currentLocation,
-            CurrentTarget,
-            FColor(255, 0, 0),
-            false, -1, 0,
-            5.f
-        );*/
-        //update navigation along path
-        //CurrentTarget = pathToFollow[1];
-
+        
+        AtJumpSegment = false;
 
         speed = speed + 250 * DeltaTime;
         if (std::abs(speed) > 500.0f)
