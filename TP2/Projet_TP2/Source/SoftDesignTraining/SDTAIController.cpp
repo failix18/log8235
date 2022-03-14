@@ -14,6 +14,7 @@
 #include "PhysicsHelpers.h"
 #include <Runtime/NavigationSystem/Public/NavigationSystem.h>
 #include <SoftDesignTraining/SoftDesignTrainingMainCharacter.h>
+#include <Runtime/NavigationSystem/Public/NavLinkComponent.h>
 
 #define PATH_FOLLOW_DEBUG
 #define SHORTCUT_SAMPLE_NUM 8
@@ -29,7 +30,7 @@ void ASDTAIController::GoToBestTarget(float deltaTime, UWorld* world, FVector pa
     TArray<FOverlapResult> sphereHitResult;
     pawnLocation = GetPawn()->GetActorLocation();
     PhysicsHelpers physicsHelper(GetWorld());
-    physicsHelper.SphereOverlap(pawnLocation, 1000000, sphereHitResult, false);
+    physicsHelper.SphereOverlap(pawnLocation, 10000000, sphereHitResult, false);
 
     FVector destination = FVector::ZeroVector;
     if (sphereHitResult.Num() > 0) 
@@ -121,12 +122,12 @@ void ASDTAIController::GoToBestTarget(float deltaTime, UWorld* world, FVector pa
     }
 
     PathToFollow.Empty();
-
+    
     for(FNavPathPoint& point : path->GetPath()->GetPathPoints())
         PathToFollow.Push(point.Location);
 
     USDTPathFollowingComponent* pathFollowingComponent = static_cast<USDTPathFollowingComponent*>(GetPathFollowingComponent());
-    pathFollowingComponent->SetPath(path->GetPath());
+    pathFollowingComponent->SetPath(path->GetPath(), GetPawn());
 
     ASDTAIController::OnMoveToTarget();
 }
@@ -150,15 +151,17 @@ void ASDTAIController::ShowNavigationPath(FVector pawnLocation)
     {
         m_ReachedTarget = true;
     }
+    InAir = pathFollowingComponent->InAir;
+    AtJumpSegment = pathFollowingComponent->AtJumpSegment;
     //Show current navigation path DrawDebugLine and DrawDebugSphere
-    pawnLocation.Z += 50;
+    pawnLocation.Z += 50; 
 
     for(int i = 0; i < PathToFollow.Num() - 1; i++)
         DrawDebugLine(
             GetWorld(),
             PathToFollow[i],
             PathToFollow[i + 1],
-            FColor(0, 0, 255),
+            FColor(0, 0, 0),
             false, -1, 0,
             5.f
         );
@@ -178,13 +181,13 @@ void ASDTAIController::UpdatePlayerInteraction(float deltaTime)
         return;
 
     APawn* selfPawn = GetPawn();
+    
     if (!selfPawn)
         return;
 
     ACharacter* playerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
     if (!playerCharacter)
         return;
-
     FVector detectionStartLocation = selfPawn->GetActorLocation() + selfPawn->GetActorForwardVector() * m_DetectionCapsuleForwardStartingOffset;
     FVector detectionEndLocation = detectionStartLocation + selfPawn->GetActorForwardVector() * m_DetectionCapsuleHalfLength * 2;
 
