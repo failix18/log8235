@@ -29,7 +29,7 @@ void ASDTAIController::GoToBestTarget(float deltaTime, UWorld* world, FVector pa
     TArray<FOverlapResult> sphereHitResult;
     pawnLocation = GetPawn()->GetActorLocation();
     PhysicsHelpers physicsHelper(GetWorld());
-    physicsHelper.SphereOverlap(pawnLocation, 1000000, sphereHitResult, false);
+    physicsHelper.SphereOverlap(pawnLocation, 10000000, sphereHitResult, false);
 
     FVector destination = FVector::ZeroVector;
     if (sphereHitResult.Num() > 0) {
@@ -66,27 +66,33 @@ void ASDTAIController::GoToBestTarget(float deltaTime, UWorld* world, FVector pa
     }
 
     PathToFollow.Empty();
-    TArray<AActor*> navLinks;
-    for (TActorIterator<AActor> ActorItr(GetWorld()); ActorItr; ++ActorItr)
-    {
-        AActor* act = Cast<AActor>(*ActorItr);
-        /*navLinks.Add(Cast<AActor>(*ActorItr));*/
-        if ((act)->GetName().Contains("NavLink")) {
-            /*GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, act->GetName());*/
-            UNavLinkComponent* NavLink = Cast<UNavLinkComponent>(act);
-            TArray<FNavigationLink> navLinks;
-            TArray<FNavigationSegmentLink> segLinks;
-            NavLink->GetNavigationLinksArray(navLinks,segLinks);
-            //FNavigationLink Link = NavLink->Links[0];
-            //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, Link.Left.ToString());
-        }
-    }
+    //TArray<AActor*> navLinks;
+    //for (TActorIterator<AActor> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+    //{
+    //    AActor* act = Cast<AActor>(*ActorItr);
+    //    /*navLinks.Add(Cast<AActor>(*ActorItr));*/
+    //    if ((act)->GetName().Contains("NavLink")) {
+    //        /*GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, act->GetName());*/
+    //        //UNavLinkComponent* NavLink = Cast<UNavLinkComponent>(act);
+    //        int test = 0;
+    //        /*FNavigationLink Link = NavLink->Links[0];
+    //        DrawDebugLine(
+    //            GetWorld(),
+    //            Link.Left,
+    //            Link.Right,
+    //            FColor(0, 0, 0),
+    //            false, -1, 0,
+    //            5.f
+    //        );*/
+    //        //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, Link.Left.ToString());
+    //    }
+    //}
     
     for(FNavPathPoint& point : path->GetPath()->GetPathPoints())
         PathToFollow.Push(point.Location);
 
     USDTPathFollowingComponent* pathFollowingComponent = static_cast<USDTPathFollowingComponent*>(GetPathFollowingComponent());
-    pathFollowingComponent->SetPath(path->GetPath());
+    pathFollowingComponent->SetPath(path->GetPath(), GetPawn());
 
     ASDTAIController::OnMoveToTarget();
 }
@@ -111,7 +117,7 @@ void ASDTAIController::ShowNavigationPath(FVector pawnLocation)
         m_ReachedTarget = true;
     }
     //Show current navigation path DrawDebugLine and DrawDebugSphere
-    pawnLocation.Z += 50;
+    pawnLocation.Z += 50; 
 
     for(int i = 0; i < PathToFollow.Num() - 1; i++)
         DrawDebugLine(

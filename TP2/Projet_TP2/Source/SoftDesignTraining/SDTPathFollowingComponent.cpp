@@ -38,38 +38,33 @@ void USDTPathFollowingComponent::FollowPathSegment(float DeltaTime)
         GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Some debug message!"));
     }
         
-    //for (FNavPathPoint pts : points)
-    //{
-    //    if (FNavMeshNodeFlags(pts.Flags).IsNavLink()) {
-    //        CurrentTarget = pts;
-    //        GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Some debug message!"));
-    //        break;
-    //    }
-    //}
-
     if (destinationDiff.IsNearlyZero(10.0f))
     {
         SetMoveSegment(0);
     }
 
-    if (SDTUtils::HasJumpFlag(segmentStart))
+    if (FNavMeshNodeFlags(points[CurrentSegmentIndex].Flags).IsNavLink() && !nextPathIsJump)
     {
-        GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("envie de mourir"));
+        nextPathIsJump = true;
+    }
+    else if (hasToJump)
+    {
+        FVector MoveVelocity = (CurrentTarget - currentLocation).GetSafeNormal() * 50.0f;
+        float nextDistance = (points[CurrentSegmentIndex].Location - currentLocation).Size();
+        float prevDistance = (points[CurrentSegmentIndex - 1].Location - currentLocation).Size();
+        if (nextDistance > prevDistance)
+        {
+            MoveVelocity.Z = 75.0f;
+        }
+        else {
+            MoveVelocity.Z = -75.0f;
+        }
+        PostProcessMove.ExecuteIfBound(this, MoveVelocity);
+        CurrentPawn->LaunchPawn(MoveVelocity, false, false);
     }
     else
     {
-        //DrawDebugLine(
-        //    GetWorld(),
-        //    currentLocation,
-        //    CurrentTarget,
-        //    FColor(255, 0, 0),
-        //    false, -1, 0,
-        //    5.f
-        //);
-        //update navigation along path
-        //CurrentTarget = pathToFollow[1];
         FVector MoveVelocity = (CurrentTarget - currentLocation) / DeltaTime;
-        //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, MoveVelocity.ToString());
         PostProcessMove.ExecuteIfBound(this, MoveVelocity);
         MovementComp->RequestDirectMove(MoveVelocity, true);
     }
@@ -82,65 +77,31 @@ void USDTPathFollowingComponent::SetMoveSegment(int32 segmentStartIndex)
     const TArray<FNavPathPoint>& points = Path->GetPathPoints();
 
     const FNavPathPoint& segmentStart = points[MoveSegmentStartIndex];
-
-    if (SDTUtils::HasJumpFlag(segmentStart) && FNavMeshNodeFlags(segmentStart.Flags).IsNavLink())
+    hasToJump = false;
+    if (nextPathIsJump)
     {
         //Handle starting jump
+        nextPathIsJump = false;
+        hasToJump = true;
+    }
+
+    //Handle normal segments
+    if (CurrentSegmentIndex + 1 < points.Num())
+    {
+        CurrentSegmentIndex++;
+        CurrentTarget = points[CurrentSegmentIndex];
     }
     else
     {
-       /* if (MovementComp->GetActorFeetLocation() == CurrentTarget) {
-            GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Some debug message!"));
-        }*/
-
-        //Handle normal segments
-        if (CurrentSegmentIndex + 1 < points.Num())
-        {
-            CurrentSegmentIndex++;
-            CurrentTarget = points[CurrentSegmentIndex];
-   //         int linkId = 0;
-   //         for (FNavPathPoint pts : points)
-   //         {
-   //             if (FNavMeshNodeFlags(pts.Flags).IsNavLink()) {
-   //                 linkId = pts.CustomLinkId;
-   //             }
-   //         }
-   //         UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
-			//INavLinkCustomInterface* CustomNavLink = NavSys->GetCustomLink(linkId);
-   //         UObject* NewNavLinkOb = Cast<UObject>(CustomNavLink);
-
-
-            if (FNavMeshNodeFlags(points[CurrentSegmentIndex].Flags).IsNavLink()) {
-
-                 for (FConstPawnIterator It = GetWorld()->GetPawnIterator(); It; ++It) {
-                     APawn* Pawn = Cast<APawn>(*It);
-                     if ((Pawn->GetActorLocation() - MovementComp->GetActorFeetLocation()).IsNearlyZero(100.0f)) {
-                         //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Some  message!"));
-                         //Pawn->LaunchPawn(FVector(0, 0, 1000), false, false);
-                         Pawn->SetActorLocation(points[CurrentSegmentIndex+1]);
-                     }
-                 }
-                 DrawDebugLine(
-                   GetWorld(),
-                   MovementComp->GetActorFeetLocation(),
-                   CurrentTarget,
-                   FColor(255, 0, 0),
-                   false, -1, 0,
-                   5.f
-       );
-            }
-
-        }
-        else
-        {
-            CollectibleReached = true;
-        }
+        CollectibleReached = true;
     }
+
 }
 
-void USDTPathFollowingComponent::SetPath(FNavPathSharedPtr path)
+void USDTPathFollowingComponent::SetPath(FNavPathSharedPtr path, APawn* pawn)
 {
     Path = path;
+    CurrentPawn = pawn;
     CollectibleReached = false;
     CurrentSegmentIndex = 0;
     SetMoveSegment(0);
