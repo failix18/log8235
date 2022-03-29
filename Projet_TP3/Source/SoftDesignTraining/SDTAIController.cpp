@@ -10,6 +10,7 @@
 //#include "UnrealMathUtility.h"
 #include "SDTUtils.h"
 #include "EngineUtils.h"
+#include <chrono>
 
 ASDTAIController::ASDTAIController(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer.SetDefaultSubobjectClass<USDTPathFollowingComponent>(TEXT("PathFollowingComponent")))
@@ -43,6 +44,7 @@ void ASDTAIController::GoToBestTarget(float deltaTime)
 
 void ASDTAIController::MoveToRandomCollectible()
 {
+    auto startTime = std::chrono::system_clock::now();
     float closestSqrCollectibleDistance = 18446744073709551610.f;
     ASDTCollectible* closestCollectible = nullptr;
 
@@ -68,16 +70,23 @@ void ASDTAIController::MoveToRandomCollectible()
             foundCollectibles.RemoveAt(index);
         }
     }
+    auto stopTime = std::chrono::system_clock::now();
+    long duration = std::chrono::duration_cast<std::chrono::microseconds>(stopTime - startTime).count();
+    DrawDebugString(GetWorld(), FVector(0.f, 0.f, 10.f), "Collectible: " + FString::FromInt(duration) + " microseconds", GetPawn(), FColor::Blue, 5.f, false);
 }
 
 void ASDTAIController::MoveToPlayer()
 {
+    auto startTime = std::chrono::system_clock::now();
     ACharacter * playerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
     if (!playerCharacter)
         return;
 
     MoveToActor(playerCharacter, 0.5f, false, true, true, NULL, false);
     OnMoveToTarget();
+    auto stopTime = std::chrono::system_clock::now();
+    long duration = std::chrono::duration_cast<std::chrono::microseconds>(stopTime - startTime).count();
+    DrawDebugString(GetWorld(), FVector(0.f, 0.f, 10.f), "Player: " + FString::FromInt(duration) + " microseconds", GetPawn(), FColor::Blue, 5.f, false);
 }
 
 void ASDTAIController::PlayerInteractionLoSUpdate()
@@ -137,6 +146,7 @@ void ASDTAIController::OnPlayerInteractionNoLosDone()
 
 void ASDTAIController::MoveToBestFleeLocation()
 {
+    auto startTime = std::chrono::system_clock::now();
     float bestLocationScore = 0.f;
     ASDTFleeLocation* bestFleeLocation = nullptr;
 
@@ -175,6 +185,9 @@ void ASDTAIController::MoveToBestFleeLocation()
         MoveToLocation(bestFleeLocation->GetActorLocation(), 0.5f, false, true, false, NULL, false);
         OnMoveToTarget();
     }
+    auto stopTime = std::chrono::system_clock::now();
+    long duration = std::chrono::duration_cast<std::chrono::microseconds>(stopTime - startTime).count();
+    DrawDebugString(GetWorld(), FVector(0.f, 0.f, 10.f), "Flee: " + FString::FromInt(duration) + " microseconds", GetPawn(), FColor::Blue, 5.f, false);
 }
 
 void ASDTAIController::OnMoveToTarget()
