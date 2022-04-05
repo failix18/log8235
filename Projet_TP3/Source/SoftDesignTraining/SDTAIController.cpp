@@ -20,6 +20,8 @@ ASDTAIController::ASDTAIController(const FObjectInitializer& ObjectInitializer)
 
 void ASDTAIController::GoToBestTarget(float deltaTime)
 {
+    if (((GFrameNumber + (reinterpret_cast<uintptr_t>(this) >> 8)) % 8) != 0)
+        return;
     switch (m_PlayerInteractionBehavior)
     {
     case PlayerInteractionBehavior_Collect:

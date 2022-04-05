@@ -14,6 +14,7 @@ ASDTBaseAIController::ASDTBaseAIController(const FObjectInitializer& ObjectIniti
 void ASDTBaseAIController::Tick(float deltaTime)
 {
     Super::Tick(deltaTime);
+    
 
     UpdatePlayerInteraction(deltaTime);
 
