@@ -12,10 +12,22 @@
 #include "EngineUtils.h"
 #include <chrono>
 
+//BT
+#include "SoftDesignTrainingCharacter.h"
+#include "BehaviorTree/Blackboard/BlackboardKeyType_Object.h"
+
 ASDTAIController::ASDTAIController(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer.SetDefaultSubobjectClass<USDTPathFollowingComponent>(TEXT("PathFollowingComponent")))
 {
-    m_PlayerInteractionBehavior = PlayerInteractionBehavior_Collect;
+    //m_PlayerInteractionBehavior = PlayerInteractionBehavior_Collect;
+
+    // related to behavior tree
+    m_targetPosBBKeyID = 0;
+    m_isTargetSeenBBKeyID = 0;
+    m_behaviorTreeComponent = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BehaviorTreeComponent"));
+    m_blackboardComponent = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackboardComponent"));
+
+
 }
 
 void ASDTAIController::GoToBestTarget(float deltaTime)
@@ -277,6 +289,8 @@ void ASDTAIController::UpdatePlayerInteraction(float deltaTime)
 
     FString debugString = "";
 
+    /*
+
     switch (m_PlayerInteractionBehavior)
     {
     case PlayerInteractionBehavior_Chase:
@@ -293,7 +307,8 @@ void ASDTAIController::UpdatePlayerInteraction(float deltaTime)
     DrawDebugString(GetWorld(), FVector(0.f, 0.f, 5.f), debugString, GetPawn(), FColor::Orange, 0.f, false);
 
     DrawDebugCapsule(GetWorld(), detectionStartLocation + m_DetectionCapsuleHalfLength * selfPawn->GetActorForwardVector(), m_DetectionCapsuleHalfLength, m_DetectionCapsuleRadius, selfPawn->GetActorQuat() * selfPawn->GetActorUpVector().ToOrientationQuat(), FColor::Blue);
-}
+    */
+    }
 
 bool ASDTAIController::HasLoSOnHit(const FHitResult& hit)
 {
@@ -372,5 +387,58 @@ void ASDTAIController::UpdatePlayerInteractionBehavior(const FHitResult& detecti
     {
         m_PlayerInteractionBehavior = currentBehavior;
         AIStateInterrupted();
+    }
+}
+
+
+
+
+
+
+
+//functions related to the behavior tree
+
+void ASDTAIController::StartBehaviorTree(APawn* pawn)
+{
+    if (ASoftDesignTrainingCharacter* aiBaseCharacter = Cast<ASoftDesignTrainingCharacter>(pawn))
+    {
+        if (aiBaseCharacter->GetBehaviorTree())
+        {
+            m_behaviorTreeComponent->StartTree(*aiBaseCharacter->GetBehaviorTree(), EBTExecutionMode::SingleRun);
+        }
+    }
+}
+
+void ASDTAIController::StopBehaviorTree(APawn* pawn)
+{
+    if (ASoftDesignTrainingCharacter* aiBaseCharacter = Cast<ASoftDesignTrainingCharacter>(pawn))
+    {
+        if (aiBaseCharacter->GetBehaviorTree())
+        {
+            m_behaviorTreeComponent->StopTree();
+        }
+    }
+}
+
+void ASDTAIController::OnPossess(APawn* pawn)
+{
+    Super::OnPossess(pawn);
+
+    if (ASoftDesignTrainingCharacter* aiBaseCharacter = Cast<ASoftDesignTrainingCharacter>(pawn))
+    {
+        if (aiBaseCharacter->GetBehaviorTree())
+        {
+            m_blackboardComponent->InitializeBlackboard(*aiBaseCharacter->GetBehaviorTree()->BlackboardAsset);
+
+            /*
+            m_targetPosBBKeyID = m_blackboardComponent->GetKeyID("TargetPos");
+            m_isTargetSeenBBKeyID = m_blackboardComponent->GetKeyID("TargetIsSeen");
+            m_nextPatrolDestinationBBKeyID = m_blackboardComponent->GetKeyID("NextPatrolDest");
+            m_currentPatrolDestinationBBKeyID = m_blackboardComponent->GetKeyID("CurrentPatrolDest");
+            */
+
+            //Set this agent in the BT
+            m_blackboardComponent->SetValue<UBlackboardKeyType_Object>(m_blackboardComponent->GetKeyID("SelfActor"), pawn);
+        }
     }
 }

@@ -11,8 +11,12 @@ ASDTBaseAIController::ASDTBaseAIController(const FObjectInitializer& ObjectIniti
     m_ReachedTarget = true;
 }
 
+
+
+
 void ASDTBaseAIController::Tick(float deltaTime)
 {
+    /* comment this  switches from default implementation to behavior tree implementation
     Super::Tick(deltaTime);
 
     UpdatePlayerInteraction(deltaTime);
@@ -24,7 +28,6 @@ void ASDTBaseAIController::Tick(float deltaTime)
     else
     {
         ShowNavigationPath();
-    }
+    }*/
 }
-
 

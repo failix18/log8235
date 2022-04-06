@@ -6,6 +6,9 @@
 #include "SDTBaseAIController.h"
 #include "SDTAIController.generated.h"
 
+#include "BehaviorTree/BehaviorTreeComponent.h"
+#include "BehaviorTree/BlackboardComponent.h"
+
 /**
  * 
  */
@@ -44,6 +47,9 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = AI)
     bool Landing = false;
 
+    UPROPERTY(EditAnywhere, category = Behavior)
+    UBehaviorTree* m_aiBehaviorTree;
+
 protected:
 
     enum PlayerInteractionBehavior
@@ -64,11 +70,17 @@ protected:
     void OnPlayerInteractionNoLosDone();
     void OnMoveToTarget();
 
+
 public:
     virtual void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result) override;
     void RotateTowards(const FVector& targetLocation);
     void SetActorLocation(const FVector& targetLocation);
     void AIStateInterrupted();
+
+    //behavior tree
+    UBehaviorTree* GetBehaviorTree() const { return m_aiBehaviorTree; }
+    void           StartBehaviorTree(APawn* pawn);
+    void           StopBehaviorTree(APawn* pawn);
 
 private:
     virtual void GoToBestTarget(float deltaTime) override;
@@ -81,4 +93,19 @@ protected:
     FRotator m_ObstacleAvoidanceRotation;
     FTimerHandle m_PlayerInteractionNoLosTimer;
     PlayerInteractionBehavior m_PlayerInteractionBehavior;
+
+//behavior tree
+private:
+
+    UPROPERTY(transient)
+        UBehaviorTreeComponent* m_behaviorTreeComponent;
+
+    UPROPERTY(transient)
+        UBlackboardComponent* m_blackboardComponent;
+
+
+    uint8   m_targetPosBBKeyID;
+    uint8   m_isTargetSeenBBKeyID;
+    uint8   m_nextPatrolDestinationBBKeyID;
+    uint8   m_currentPatrolDestinationBBKeyID;
 };
