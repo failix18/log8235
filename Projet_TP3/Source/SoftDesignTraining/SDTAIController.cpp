@@ -22,8 +22,14 @@ ASDTAIController::ASDTAIController(const FObjectInitializer& ObjectInitializer)
     //m_PlayerInteractionBehavior = PlayerInteractionBehavior_Collect;
 
     // related to behavior tree
-    m_targetPosBBKeyID = 0;
-    m_isTargetSeenBBKeyID = 0;
+    isChasingOrFleeingBBKeyID = 0;
+    isPlayerPoweredUpBBKeyID = 0;
+    pawnStateBBKeyID = 0;
+    nextPositionBBKeyID = 0;
+    isJumpingBBKeyID = 0;
+    isPlayerDetectedBBKeyID = 0;
+    targetedPlayerBBKeyID = 0;
+
     m_behaviorTreeComponent = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BehaviorTreeComponent"));
     m_blackboardComponent = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackboardComponent"));
 
@@ -436,6 +442,14 @@ void ASDTAIController::OnPossess(APawn* pawn)
             m_nextPatrolDestinationBBKeyID = m_blackboardComponent->GetKeyID("NextPatrolDest");
             m_currentPatrolDestinationBBKeyID = m_blackboardComponent->GetKeyID("CurrentPatrolDest");
             */
+
+            isChasingOrFleeingBBKeyID = m_blackboardComponent->GetKeyID("IsChasingOrFleeing");
+            isPlayerPoweredUpBBKeyID = m_blackboardComponent->GetKeyID("IsPlayerPoweredUp");
+            pawnStateBBKeyID = m_blackboardComponent->GetKeyID("PawnState");
+            nextPositionBBKeyID = m_blackboardComponent->GetKeyID("NextPosition");
+            isJumpingBBKeyID = m_blackboardComponent->GetKeyID("IsJumping");
+            isPlayerDetectedBBKeyID = m_blackboardComponent->GetKeyID("IsPlayerDetected");
+            targetedPlayerBBKeyID = m_blackboardComponent->GetKeyID("TargetedPlayer");
 
             //Set this agent in the BT
             m_blackboardComponent->SetValue<UBlackboardKeyType_Object>(m_blackboardComponent->GetKeyID("SelfActor"), pawn);

@@ -14,4 +14,9 @@ class SOFTDESIGNTRAINING_API UBTService_updateIsChaseFlee : public UBTService_Bl
 {
 	GENERATED_BODY()
 	
+
+public:
+	UBTService_updateIsChaseFlee();
+
+	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 };

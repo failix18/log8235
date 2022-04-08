@@ -3,3 +3,15 @@
 
 #include "BTService_updateIsPlayerPowerUp.h"
 
+#include "SDTAIController.h"
+#include "BehaviorTree/Blackboard/BlackboardKeyType_Bool.h"
+
+void UBTService_updateIsPlayerPowerUp::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+{
+	if (ASDTAIController* aiController = Cast<ASDTAIController>(OwnerComp.GetAIOwner())) {
+
+		//Write to blackboard
+		OwnerComp.GetBlackboardComponent()->SetValue<UBlackboardKeyType_Bool>(aiController->GetIsPlayerPoweredUpBBKeyID(), SDTUtils::IsPlayerPoweredUp(GetWorld()));
+
+	}
+}

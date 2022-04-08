@@ -14,4 +14,9 @@ class SOFTDESIGNTRAINING_API UBTService_updateIsJumping : public UBTService_Blac
 {
 	GENERATED_BODY()
 	
+
+public:
+	UBTService_updateIsJumping();
+
+	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 };

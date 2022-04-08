@@ -13,5 +13,10 @@ UCLASS()
 class SOFTDESIGNTRAINING_API UBTService__setNextPointInterest : public UBTService_BlackboardBase
 {
 	GENERATED_BODY()
+
+public:
+	UBTService__setNextPointInterest();
+
+	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 	
 };

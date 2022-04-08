@@ -13,5 +13,10 @@ UCLASS()
 class SOFTDESIGNTRAINING_API UBTService_updateIsPlayerDetected : public UBTService_BlackboardBase
 {
 	GENERATED_BODY()
+
+public:
+	UBTService_updateIsPlayerDetected();
+
+	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 	
 };

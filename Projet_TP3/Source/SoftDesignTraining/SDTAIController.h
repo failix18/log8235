@@ -5,6 +5,9 @@
 //BT
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "SDTUtils.h"
+#include "EngineUtils.h"
+#include <chrono>
 
 #include "CoreMinimal.h"
 #include "SDTBaseAIController.h"
@@ -88,6 +91,14 @@ public:
     void           StartBehaviorTree(APawn* pawn);
     void           StopBehaviorTree(APawn* pawn);
 
+    uint8   GetIsChasingOrFleeingBBKeyID() const{ return isChasingOrFleeingBBKeyID; };
+    uint8   GetIsPlayerPoweredUpBBKeyID() const{ return isPlayerPoweredUpBBKeyID; };
+    uint8   GetPawnStateBBKeyID() const{ return pawnStateBBKeyID; };
+    uint8   GetNextPositionBBKeyID() const{ return nextPositionBBKeyID; };
+    uint8   GetIsJumpingBBKeyID() const{ return isJumpingBBKeyID; };
+    uint8   GetIsPlayerDetectedBBKeyID() const{ return isPlayerDetectedBBKeyID; };
+    uint8   GetTargetedPlayerBBKeyID() const{ return targetedPlayerBBKeyID; };
+
 private:
     virtual void GoToBestTarget(float deltaTime) override;
     virtual void UpdatePlayerInteraction(float deltaTime) override;
@@ -110,8 +121,16 @@ private:
         UBlackboardComponent* m_blackboardComponent;
 
 
-    uint8   m_targetPosBBKeyID;
-    uint8   m_isTargetSeenBBKeyID;
-    uint8   m_nextPatrolDestinationBBKeyID;
-    uint8   m_currentPatrolDestinationBBKeyID;
+    uint8   isChasingOrFleeingBBKeyID;
+    uint8   isPlayerPoweredUpBBKeyID;
+    uint8   pawnStateBBKeyID;
+    uint8   nextPositionBBKeyID;
+    uint8   isJumpingBBKeyID;
+    uint8   isPlayerDetectedBBKeyID;
+    uint8   targetedPlayerBBKeyID;
+
+public :
+    std::chrono::system_clock::time_point StartTime;
+    FHitResult NextPointOfInterest;
+    
 };

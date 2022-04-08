@@ -14,4 +14,9 @@ class SOFTDESIGNTRAINING_API UBTService_updateIsPlayerPowerUp : public UBTServic
 {
 	GENERATED_BODY()
 	
+
+public:
+	UBTService_updateIsPlayerPowerUp();
+
+	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 };
