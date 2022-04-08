@@ -22,7 +22,7 @@ void UBTService_updateIsPlayerDetected::TickNode(UBehaviorTreeComponent& OwnerCo
             updateInBlackboard(OwnerComp, aiController, false);
 
         // le joueur est repere mais pas visible par le pawn
-        else if (!HasLoSOnHit(hit))
+        else if (!HasLoSOnHit(hit, aiController))
             updateInBlackboard(OwnerComp, aiController, false);
 
         else 
@@ -33,7 +33,7 @@ void UBTService_updateIsPlayerDetected::TickNode(UBehaviorTreeComponent& OwnerCo
 }
 
 //Write to blackboard
-void updateInBlackboard(UBehaviorTreeComponent& OwnerComp, ASDTAIController* aiController, bool value) {
+void UBTService_updateIsPlayerDetected::updateInBlackboard(UBehaviorTreeComponent& OwnerComp, ASDTAIController* aiController, bool value) {
 	OwnerComp.GetBlackboardComponent()->SetValue<UBlackboardKeyType_Bool>(aiController->GetIsPlayerDetectedBBKeyID(),value );
 
 }
@@ -41,8 +41,9 @@ void updateInBlackboard(UBehaviorTreeComponent& OwnerComp, ASDTAIController* aiC
 
 
 // joueur est visible ?
-bool HasLoSOnHit(const FHitResult& hit)
+bool UBTService_updateIsPlayerDetected::HasLoSOnHit(const FHitResult& hit, ASDTAIController* aiController)
 {
+    
     if (!hit.GetComponent())
         return false;
 
@@ -56,7 +57,7 @@ bool HasLoSOnHit(const FHitResult& hit)
     FCollisionQueryParams queryParams = FCollisionQueryParams();
     queryParams.AddIgnoredActor(hit.GetActor());
 
-    GetWorld()->LineTraceSingleByObjectType(losHit, hit.TraceStart, hit.ImpactPoint + hitDirection, TraceObjectTypes, queryParams);
+    aiController->GetWorld()->LineTraceSingleByObjectType(losHit, hit.TraceStart, hit.ImpactPoint + hitDirection, TraceObjectTypes, queryParams);
 
     return losHit.GetActor() == nullptr;
 }

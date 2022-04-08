@@ -1,6 +1,4 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
-#include "SDTAIController.h"
 #include "BTService__setNextPointInterest.h"
 
 #include "SDTAIController.h"
@@ -24,7 +22,7 @@ void UBTService__setNextPointInterest::TickNode(UBehaviorTreeComponent& OwnerCom
     }
 }
 
-void GetHightestPriorityDetectionHit(const TArray<FHitResult>& hits, FHitResult& outDetectionHit)
+void UBTService__setNextPointInterest::GetHightestPriorityDetectionHit(const TArray<FHitResult>& hits, FHitResult& outDetectionHit)
 {
     for (const FHitResult& hit : hits)
     {

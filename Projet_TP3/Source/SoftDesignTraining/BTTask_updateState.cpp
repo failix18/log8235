@@ -27,6 +27,6 @@ EBTNodeResult::Type UBTTask_updateState::ExecuteTask(UBehaviorTreeComponent& Own
             OwnerComp.GetBlackboardComponent()->SetValue<UBlackboardKeyType_String>(aiController->GetPawnStateBBKeyID(), "Collect");
         }
 
-        return EBTNodeResult::Type();
+        return EBTNodeResult::Succeeded;
        }
 }

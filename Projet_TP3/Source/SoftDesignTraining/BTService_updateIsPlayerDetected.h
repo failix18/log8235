@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "SDTAIController.h"
 #include "CoreMinimal.h"
 #include "BehaviorTree/Services/BTService_BlackboardBase.h"
 #include "BTService_updateIsPlayerDetected.generated.h"
@@ -18,5 +19,8 @@ public:
 	UBTService_updateIsPlayerDetected();
 
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
+
+	void updateInBlackboard(UBehaviorTreeComponent& OwnerComp, ASDTAIController* aiController, bool value);
+	bool HasLoSOnHit(const FHitResult& hit, ASDTAIController* aiController);
 	
 };
