@@ -1,8 +1,12 @@
 // Copyright 1998-2015 Epic Games, Inc. All Rights Reserved.
 #pragma once
+
+//BT
+#include "BehaviorTree/BehaviorTree.h"
+
 #include "GameFramework/Character.h"
 #include "SoftDesignTrainingCharacter.generated.h"
-#include "BehaviorTree/BehaviorTree.h"
+
 
 UCLASS()
 class ASoftDesignTrainingCharacter : public ACharacter

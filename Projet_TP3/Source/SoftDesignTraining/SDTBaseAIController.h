@@ -2,10 +2,13 @@
 
 #pragma once
 
+//BT
+#include "BehaviorTree/BehaviorTree.h"
+
 #include "CoreMinimal.h"
 #include "AIController.h"
 #include "SDTBaseAIController.generated.h"
-#include "BehaviorTree/BehaviorTree.h"
+
 
 /**
  * 

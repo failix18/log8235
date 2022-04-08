@@ -2,12 +2,15 @@
 
 #pragma once
 
+//BT
+#include "BehaviorTree/BehaviorTreeComponent.h"
+#include "BehaviorTree/BlackboardComponent.h"
+
 #include "CoreMinimal.h"
 #include "SDTBaseAIController.h"
 #include "SDTAIController.generated.h"
 
-#include "BehaviorTree/BehaviorTreeComponent.h"
-#include "BehaviorTree/BlackboardComponent.h"
+
 
 /**
  * 
@@ -69,6 +72,9 @@ protected:
     void PlayerInteractionLoSUpdate();
     void OnPlayerInteractionNoLosDone();
     void OnMoveToTarget();
+
+    //BT
+    virtual void OnPossess(APawn* pawn) override;
 
 
 public:
