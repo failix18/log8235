@@ -13,5 +13,7 @@ UCLASS()
 class SOFTDESIGNTRAINING_API UBTTask_FindNextPosition : public UBTTask_BlackboardBase
 {
 	GENERATED_BODY()
+
+	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	
 };
