@@ -6,6 +6,10 @@
 #include "SDTAIController.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Bool.h"
 
+UBTService_updateIsChaseFlee::UBTService_updateIsChaseFlee() {
+	bCreateNodeInstance = true;
+}
+
 
 void UBTService_updateIsChaseFlee::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {

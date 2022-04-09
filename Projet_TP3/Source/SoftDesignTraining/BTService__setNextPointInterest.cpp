@@ -3,6 +3,9 @@
 
 #include "SDTAIController.h"
 
+UBTService__setNextPointInterest::UBTService__setNextPointInterest() {
+    bCreateNodeInstance = true;
+}
 
 void UBTService__setNextPointInterest::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {

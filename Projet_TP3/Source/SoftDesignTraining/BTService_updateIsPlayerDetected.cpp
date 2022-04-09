@@ -7,6 +7,10 @@
 #include "SDTAIController.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Bool.h"
 
+UBTService_updateIsPlayerDetected::UBTService_updateIsPlayerDetected() {
+    bCreateNodeInstance = true;
+}
+
 void UBTService_updateIsPlayerDetected::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	if (ASDTAIController* aiController = Cast<ASDTAIController>(OwnerComp.GetAIOwner())) {
