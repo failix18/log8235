@@ -13,6 +13,8 @@ UBTService_updateIsPlayerDetected::UBTService_updateIsPlayerDetected() {
 
 void UBTService_updateIsPlayerDetected::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
+    GEngine->AddOnScreenDebugMessage(-1, 12.f, FColor::Red, TEXT("in UBTService_updateIsPlayerDetected"));
+
 	if (ASDTAIController* aiController = Cast<ASDTAIController>(OwnerComp.GetAIOwner())) {
 
         FHitResult hit = aiController->NextPointOfInterest;

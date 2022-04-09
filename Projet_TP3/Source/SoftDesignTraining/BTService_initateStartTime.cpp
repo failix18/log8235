@@ -23,6 +23,8 @@ void UBTService_initateStartTime::TickNode(UBehaviorTreeComponent& OwnerComp, ui
 		auto startTime = std::chrono::system_clock::now();
 		aiController->StartTime = startTime;
 
+
+
 	}
 
 }

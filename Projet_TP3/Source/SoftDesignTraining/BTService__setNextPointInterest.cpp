@@ -9,6 +9,8 @@ UBTService__setNextPointInterest::UBTService__setNextPointInterest() {
 
 void UBTService__setNextPointInterest::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
+    GEngine->AddOnScreenDebugMessage(-1, 12.f, FColor::Red, TEXT("in UBTService__setNextPointInterest"));
+
     if (ASDTAIController* aiController = Cast<ASDTAIController>(OwnerComp.GetAIOwner())) {
 
         APawn* selfPawn = aiController->GetPawn();

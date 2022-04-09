@@ -28,17 +28,27 @@
 
 EBTNodeResult::Type UBTTask_FindNextPosition::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
+    GEngine->AddOnScreenDebugMessage(-1, 12.f, FColor::Red, TEXT("in UBTTask_FindNextPosition"));
+
     if (ASDTAIController* aiController = Cast<ASDTAIController>(OwnerComp.GetAIOwner())) {
 
+        if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(FName("IsPlayerPoweredUp"))) {
 
-            //FVector NextCollectible = findNextCollectible(OwnerComp, aiController);
-            //OwnerComp.GetBlackboardComponent()->SetValue<UBlackboardKeyType_Vector>(aiController->GetNextPositionBBKeyID(), NextCollectible);
-            return EBTNodeResult::Succeeded;
+            FVector NextCollectible = findNextCollectible(OwnerComp, aiController);
+            OwnerComp.GetBlackboardComponent()->SetValue<UBlackboardKeyType_Vector>(aiController->GetNextPositionBBKeyID(), NextCollectible);
+        }
+        else {
+            FVector FleeLocation = findBestFleeLocation(OwnerComp, aiController);
+            OwnerComp.GetBlackboardComponent()->SetValue<UBlackboardKeyType_Vector>(aiController->GetNextPositionBBKeyID(), FleeLocation);
+        }
+            
+         return EBTNodeResult::Succeeded;
+
 
         
 
     }
-    return EBTNodeResult::Succeeded;
+    return EBTNodeResult::Failed;
 }
 
 
@@ -64,6 +74,8 @@ FVector UBTTask_FindNextPosition::findNextCollectible(UBehaviorTreeComponent& Ow
 
         if (!collectibleActor->IsOnCooldown())
         {
+            GEngine->AddOnScreenDebugMessage(-1, 12.f, FColor::Blue, TEXT("in bon endroit"));
+
             return foundCollectibles[index]->GetActorLocation();
 
         }

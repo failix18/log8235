@@ -25,6 +25,7 @@ void ASoftDesignTrainingCharacter::BeginPlay()
     if (ASDTAIController* aiController = Cast<ASDTAIController>(GetController()))
     {
         aiController->StartBehaviorTree(this);
+
     }
 }
 

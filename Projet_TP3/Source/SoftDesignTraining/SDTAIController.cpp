@@ -408,6 +408,7 @@ void ASDTAIController::UpdatePlayerInteractionBehavior(const FHitResult& detecti
 
 void ASDTAIController::StartBehaviorTree(APawn* pawn)
 {
+
     if (ASoftDesignTrainingCharacter* aiBaseCharacter = Cast<ASoftDesignTrainingCharacter>(pawn))
     {
         if (aiBaseCharacter->GetBehaviorTree())
@@ -438,12 +439,6 @@ void ASDTAIController::OnPossess(APawn* pawn)
         {
             m_blackboardComponent->InitializeBlackboard(*aiBaseCharacter->GetBehaviorTree()->BlackboardAsset);
 
-            /*
-            m_targetPosBBKeyID = m_blackboardComponent->GetKeyID("TargetPos");
-            m_isTargetSeenBBKeyID = m_blackboardComponent->GetKeyID("TargetIsSeen");
-            m_nextPatrolDestinationBBKeyID = m_blackboardComponent->GetKeyID("NextPatrolDest");
-            m_currentPatrolDestinationBBKeyID = m_blackboardComponent->GetKeyID("CurrentPatrolDest");
-            */
 
             isChasingOrFleeingBBKeyID = m_blackboardComponent->GetKeyID("IsChasingOrFleeing");
             isPlayerPoweredUpBBKeyID = m_blackboardComponent->GetKeyID("IsPlayerPoweredUp");

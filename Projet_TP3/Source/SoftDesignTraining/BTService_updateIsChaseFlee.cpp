@@ -13,6 +13,8 @@ UBTService_updateIsChaseFlee::UBTService_updateIsChaseFlee() {
 
 void UBTService_updateIsChaseFlee::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 12.f, FColor::Red, TEXT("in UBTService_updateIsChaseFlee"));
+
 	if (ASDTAIController* aiController = Cast<ASDTAIController>(OwnerComp.GetAIOwner())) {
 
 		if (OwnerComp.GetBlackboardComponent()->GetValue<UBlackboardKeyType_Bool>(aiController->GetIsPlayerDetectedBBKeyID())) {

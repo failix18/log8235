@@ -16,6 +16,7 @@ ASDTBaseAIController::ASDTBaseAIController(const FObjectInitializer& ObjectIniti
 
 void ASDTBaseAIController::Tick(float deltaTime)
 {
+    Super::Tick(deltaTime);
     /* comment this  switches from default implementation to behavior tree implementation
     Super::Tick(deltaTime);
 
