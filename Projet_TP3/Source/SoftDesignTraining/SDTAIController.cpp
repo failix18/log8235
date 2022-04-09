@@ -15,6 +15,8 @@
 //BT
 #include "SoftDesignTrainingCharacter.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Object.h"
+#include "BehaviorTree/Blackboard/BlackboardKeyType_Bool.h"
+
 
 ASDTAIController::ASDTAIController(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer.SetDefaultSubobjectClass<USDTPathFollowingComponent>(TEXT("PathFollowingComponent")))
@@ -453,6 +455,8 @@ void ASDTAIController::OnPossess(APawn* pawn)
 
             //Set this agent in the BT
             m_blackboardComponent->SetValue<UBlackboardKeyType_Object>(m_blackboardComponent->GetKeyID("SelfActor"), pawn);
+
+            m_blackboardComponent->SetValue<UBlackboardKeyType_Bool>(isChasingOrFleeingBBKeyID, false);
         }
     }
 }
