@@ -113,17 +113,17 @@ void ASDTAIController::MoveToPlayer()
         randAngle = rand() % 360;
     }
 
-
+    //random destination in a circle around the player 
+    FVector randomDestination = playerCharacter->GetActorLocation() + 150.0f * FVector(cos(randAngle), sin(randAngle), 0.0f);
     APawn* selfPawn = GetPawn();
-    if (selfPawn->GetDistanceTo(playerCharacter) <= 325.0f) { //If the chaser is clone enough to the player, he goes straight to him
-        randAngle = 0.0f;
+
+    if ((selfPawn->GetActorLocation() - randomDestination).IsNearlyZero(5.0f)) { //The chaser goes to a position around the player
+        randAngle = 0.0f;                                                        // before going directly after him
         MoveToActor(playerCharacter, 0.5f, false, true, true, NULL, false);
     }
     else { //The chaser is given a random destination in a circle around the player to surround him
-        FVector rota = playerCharacter->GetActorLocation() + 200.0f * FVector(cos(randAngle), sin(randAngle), 0.0f);
-        MoveToLocation(rota, 0.5f, false, true, true, NULL, false);
+        MoveToLocation(randomDestination, 0.5f, false, true, true, NULL, false);
     }
-
 
     auto stopTime = std::chrono::system_clock::now();
     long duration = std::chrono::duration_cast<std::chrono::microseconds>(stopTime - startTime).count();
