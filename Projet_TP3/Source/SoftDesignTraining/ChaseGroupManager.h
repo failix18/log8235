@@ -12,9 +12,8 @@ public:
     static void Destroy();
 
     void AddAgentToGroup(ASDTAIController* agent);
-    void RemoveAgentToGroup(ASDTAIController* agent);
+    void RemoveAgentFromGroup(ASDTAIController* agent);
 
-    TArray<ASDTAIController*> m_chasingAgents;
     void debugDisplayMembers();
 
 private:
@@ -22,4 +21,7 @@ private:
     //SINGLETON
     ChaseGroupManager();
     static ChaseGroupManager* m_Instance;
+
+    // Array of current members of the chase group
+    TArray<ASDTAIController*> m_chasingAgents;
 };

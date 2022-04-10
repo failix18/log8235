@@ -21,15 +21,20 @@ ASDTAIController::ASDTAIController(const FObjectInitializer& ObjectInitializer)
 
 void ASDTAIController::UpdateChaseGroupMembership()
 {
+    // Get the chase group
     ChaseGroupManager* chaseGroupManager = ChaseGroupManager::GetInstance();
+
+    // Set membership according to current behavior
     if (m_PlayerInteractionBehavior == PlayerInteractionBehavior_Chase)
     {
-        chaseGroupManager->m_chasingAgents.AddUnique(this);
+        chaseGroupManager->AddAgentToGroup(this);
     }
     else
     {
-        chaseGroupManager->RemoveAgentToGroup(this);
+        chaseGroupManager->RemoveAgentFromGroup(this);
     }
+
+    // Update the debug display
     chaseGroupManager->debugDisplayMembers();
 }
 
@@ -38,6 +43,7 @@ void ASDTAIController::GoToBestTarget(float deltaTime)
     if (((GFrameNumber + (reinterpret_cast<uintptr_t>(this) >> 8)) % 8) != 0)
         return;
 
+    // Updating chase group here since Armelle's isn't done with her tree
     UpdateChaseGroupMembership();
 
     switch (m_PlayerInteractionBehavior)
