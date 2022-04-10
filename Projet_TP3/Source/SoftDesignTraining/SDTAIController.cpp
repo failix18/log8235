@@ -104,12 +104,18 @@ void ASDTAIController::MoveToRandomCollectible()
 void ASDTAIController::MoveToPlayer()
 {
     auto startTime = std::chrono::system_clock::now();
-    ACharacter * playerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+    ACharacter* playerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
     if (!playerCharacter)
         return;
+    //DrawDebugCircle(GetWorld(), playerCharacter->GetActorLocation(), 200, 50, FColor(0, 0, 0), true, -1, 0, 10);
+    float v1 = rand() % 360;
+    FVector rota = playerCharacter->GetActorLocation() + 200.0f * FVector(cos(v1), sin(v1), 0.0f);
+    const FRotator rot(90);
 
-    MoveToActor(playerCharacter, 0.5f, false, true, true, NULL, false);
-    OnMoveToTarget();
+    //DrawDebugLine(GetWorld(), playerCharacter->GetActorLocation(), rota,FColor::Emerald, true, -1, 0, 10);
+    //MoveToActor(playerCharacter, 0.5f, false, true, true, NULL, false);
+    MoveToLocation(rota, 0.5f, false, true, true, NULL, false);
+
     auto stopTime = std::chrono::system_clock::now();
     long duration = std::chrono::duration_cast<std::chrono::microseconds>(stopTime - startTime).count();
     DrawDebugString(GetWorld(), FVector(0.f, 0.f, 10.f), "Player: " + FString::FromInt(duration) + " microseconds", GetPawn(), FColor::Blue, 5.f, false);
