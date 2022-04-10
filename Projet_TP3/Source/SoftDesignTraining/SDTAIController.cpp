@@ -11,6 +11,7 @@
 #include "SDTUtils.h"
 #include "EngineUtils.h"
 #include <chrono>
+#include "ChaseGroupManager.h"
 
 ASDTAIController::ASDTAIController(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer.SetDefaultSubobjectClass<USDTPathFollowingComponent>(TEXT("PathFollowingComponent")))
@@ -18,10 +19,27 @@ ASDTAIController::ASDTAIController(const FObjectInitializer& ObjectInitializer)
     m_PlayerInteractionBehavior = PlayerInteractionBehavior_Collect;
 }
 
+void ASDTAIController::UpdateChaseGroupMembership()
+{
+    ChaseGroupManager* chaseGroupManager = ChaseGroupManager::GetInstance();
+    if (m_PlayerInteractionBehavior == PlayerInteractionBehavior_Chase)
+    {
+        chaseGroupManager->m_chasingAgents.AddUnique(this);
+    }
+    else
+    {
+        chaseGroupManager->RemoveAgentToGroup(this);
+    }
+    chaseGroupManager->debugDisplayMembers();
+}
+
 void ASDTAIController::GoToBestTarget(float deltaTime)
 {
     if (((GFrameNumber + (reinterpret_cast<uintptr_t>(this) >> 8)) % 8) != 0)
         return;
+
+    UpdateChaseGroupMembership();
+
     switch (m_PlayerInteractionBehavior)
     {
     case PlayerInteractionBehavior_Collect:
