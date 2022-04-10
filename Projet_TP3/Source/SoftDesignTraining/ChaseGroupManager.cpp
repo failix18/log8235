@@ -26,16 +26,19 @@ void ChaseGroupManager::Destroy()
     m_Instance = nullptr;
 }
 
+// Add an agent to the group if its not already there
 void ChaseGroupManager::AddAgentToGroup(ASDTAIController* agent)
 {
-    m_chasingAgents.Add(agent);
+    m_chasingAgents.AddUnique(agent);
 }
 
-void ChaseGroupManager::RemoveAgentToGroup(ASDTAIController* agent)
+// Remove an agent from the group if it's present
+void ChaseGroupManager::RemoveAgentFromGroup(ASDTAIController* agent)
 {
     m_chasingAgents.Remove(agent);
 }
 
+// Display a list of current chase group members on the screen
 void ChaseGroupManager::debugDisplayMembers()
 {
     FString debugString = "Chase group: Nobody";
