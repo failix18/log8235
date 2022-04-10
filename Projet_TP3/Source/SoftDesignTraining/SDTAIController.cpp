@@ -107,14 +107,23 @@ void ASDTAIController::MoveToPlayer()
     ACharacter* playerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
     if (!playerCharacter)
         return;
-    //DrawDebugCircle(GetWorld(), playerCharacter->GetActorLocation(), 200, 50, FColor(0, 0, 0), true, -1, 0, 10);
-    float v1 = rand() % 360;
-    FVector rota = playerCharacter->GetActorLocation() + 200.0f * FVector(cos(v1), sin(v1), 0.0f);
-    const FRotator rot(90);
 
-    //DrawDebugLine(GetWorld(), playerCharacter->GetActorLocation(), rota,FColor::Emerald, true, -1, 0, 10);
-    //MoveToActor(playerCharacter, 0.5f, false, true, true, NULL, false);
-    MoveToLocation(rota, 0.5f, false, true, true, NULL, false);
+
+    if (randAngle == 0.0f) {
+        randAngle = rand() % 360;
+    }
+
+
+    APawn* selfPawn = GetPawn();
+    if (selfPawn->GetDistanceTo(playerCharacter) <= 325.0f) { //If the chaser is clone enough to the player, he goes straight to him
+        randAngle = 0.0f;
+        MoveToActor(playerCharacter, 0.5f, false, true, true, NULL, false);
+    }
+    else { //The chaser is given a random destination in a circle around the player to surround him
+        FVector rota = playerCharacter->GetActorLocation() + 200.0f * FVector(cos(randAngle), sin(randAngle), 0.0f);
+        MoveToLocation(rota, 0.5f, false, true, true, NULL, false);
+    }
+
 
     auto stopTime = std::chrono::system_clock::now();
     long duration = std::chrono::duration_cast<std::chrono::microseconds>(stopTime - startTime).count();
