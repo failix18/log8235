@@ -1,5 +1,9 @@
 // Copyright 1998-2015 Epic Games, Inc. All Rights Reserved.
 #pragma once
+
+//BT
+#include "BehaviorTree/BehaviorTree.h"
+
 #include "GameFramework/Character.h"
 #include "SoftDesignTrainingCharacter.generated.h"
 
@@ -16,10 +20,19 @@ public:
     virtual void OnCollectPowerUp() {};
     void Die();
 
+    //BT
+    UBehaviorTree* GetBehaviorTree() const { return m_aiBehaviorTree; }
+
+
 protected:
     UFUNCTION()
     virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
     FVector m_StartingPosition;
+
+    //BT
+    UPROPERTY(EditAnywhere, category = Behavior)
+        UBehaviorTree* m_aiBehaviorTree;
+
 };
 

@@ -2,6 +2,13 @@
 
 #pragma once
 
+//BT
+#include "BehaviorTree/BehaviorTreeComponent.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "SDTUtils.h"
+#include "EngineUtils.h"
+#include <chrono>
+
 #include "CoreMinimal.h"
 #include "SDTBaseAIController.h"
 #include "SDTAIController.generated.h"
@@ -44,6 +51,9 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = AI)
     bool Landing = false;
 
+    UPROPERTY(EditAnywhere, category = Behavior)
+    UBehaviorTree* m_aiBehaviorTree;
+
 protected:
 
     enum PlayerInteractionBehavior
@@ -57,9 +67,6 @@ protected:
     void UpdatePlayerInteractionBehavior(const FHitResult& detectionHit, float deltaTime);
     PlayerInteractionBehavior GetCurrentPlayerInteractionBehavior(const FHitResult& hit);
     bool HasLoSOnHit(const FHitResult& hit);
-    void MoveToRandomCollectible();
-    void MoveToPlayer();
-    void MoveToBestFleeLocation();
     void PlayerInteractionLoSUpdate();
     void OnPlayerInteractionNoLosDone();
     void OnMoveToTarget();
@@ -69,6 +76,20 @@ public:
     void RotateTowards(const FVector& targetLocation);
     void SetActorLocation(const FVector& targetLocation);
     void AIStateInterrupted();
+
+    //BT
+    void MoveToRandomCollectible();
+    void MoveToPlayer();
+    void MoveToBestFleeLocation();
+    bool ProcessDetectPlayer();
+    virtual void OnPossess(APawn* pawn) override;
+    UBehaviorTree* GetBehaviorTree() const { return m_aiBehaviorTree; }
+    void           StartBehaviorTree(APawn* pawn);
+    void           StopBehaviorTree(APawn* pawn);
+
+    uint8   GetIsPlayerDetectedBBKeyID() const { return IsPlayerDetectedBBKeyID; };
+    uint8   GetIsPlayerPoweredUpBBKeyID() const { return isPlayerPoweredUpBBKeyID; };
+ 
 
 private:
     virtual void GoToBestTarget(float deltaTime) override;
@@ -83,4 +104,18 @@ protected:
     FTimerHandle m_PlayerInteractionNoLosTimer;
     PlayerInteractionBehavior m_PlayerInteractionBehavior;
     float randAngle = 0.0f;
+
+
+    //BT
+private:
+
+    UPROPERTY(transient)
+        UBehaviorTreeComponent* m_behaviorTreeComponent;
+
+    UPROPERTY(transient)
+        UBlackboardComponent* m_blackboardComponent;
+
+    uint8   IsPlayerDetectedBBKeyID;
+    uint8   isPlayerPoweredUpBBKeyID;
+
 };
