@@ -74,6 +74,7 @@ private:
     virtual void GoToBestTarget(float deltaTime) override;
     virtual void UpdatePlayerInteraction(float deltaTime) override;
     virtual void ShowNavigationPath() override;
+    virtual void UpdateChaseGroupMembership();
 
 
 protected:
