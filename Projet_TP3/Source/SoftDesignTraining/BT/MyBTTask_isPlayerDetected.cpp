@@ -4,7 +4,7 @@
 #include "MyBTTask_isPlayerDetected.h"
 
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Bool.h"
-#include <SoftDesignTraining/SDTAIController.cpp>
+#include <SoftDesignTraining/SDTAIController.h>
 
 EBTNodeResult::Type UMyBTTask_isPlayerDetected::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {

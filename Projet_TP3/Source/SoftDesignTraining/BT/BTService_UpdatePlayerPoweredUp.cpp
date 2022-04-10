@@ -4,8 +4,7 @@
 #include "BTService_UpdatePlayerPoweredUp.h"
 
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Bool.h"
-#include <SoftDesignTraining/SDTAIController.cpp>
-
+#include <SoftDesignTraining/SDTAIController.h>
 
 UBTService_UpdatePlayerPoweredUp::UBTService_UpdatePlayerPoweredUp() {
 	bCreateNodeInstance = true;

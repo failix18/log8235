@@ -4,8 +4,7 @@
 #include "BTTask_IsPlayerPoweredUp.h"
 
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Bool.h"
-#include <SoftDesignTraining/SDTAIController.cpp>
-
+#include <SoftDesignTraining/SDTAIController.h>
 EBTNodeResult::Type UBTTask_IsPlayerPoweredUp::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	if (ASDTAIController* aiController = Cast<ASDTAIController>(OwnerComp.GetAIOwner()))

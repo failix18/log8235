@@ -3,7 +3,7 @@
 
 #include "MyBTTask_ChasePlayer.h"
 
-#include <SoftDesignTraining/SDTAIController.cpp>
+#include <SoftDesignTraining/SDTAIController.h>
 
 
 EBTNodeResult::Type UMyBTTask_ChasePlayer::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)

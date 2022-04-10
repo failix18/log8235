@@ -3,7 +3,7 @@
 
 #include "BTService_TryDetectPlayer.h"
 
-#include <SoftDesignTraining/SDTAIController.cpp>
+#include <SoftDesignTraining/SDTAIController.h>
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Bool.h"
 
 

@@ -3,8 +3,7 @@
 
 #include "BTTask_FleePlayer.h"
 
-#include <SoftDesignTraining/SDTAIController.cpp>
-
+#include <SoftDesignTraining/SDTAIController.h>
 
 EBTNodeResult::Type UBTTask_FleePlayer::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
