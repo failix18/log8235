@@ -16,8 +16,11 @@ void UBTService_TryDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uin
 
 	if (ASDTAIController* aiController = Cast<ASDTAIController>(OwnerComp.GetAIOwner()))
 	{
+
 		bool isPlayerDetected = aiController->ProcessDetectPlayer();
 		OwnerComp.GetBlackboardComponent()->SetValue<UBlackboardKeyType_Bool>(aiController->GetIsPlayerDetectedBBKeyID(), isPlayerDetected);
+
+
 	}
 	
 }

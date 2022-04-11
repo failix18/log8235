@@ -26,6 +26,7 @@ ASDTAIController::ASDTAIController(const FObjectInitializer& ObjectInitializer)
     // related to behavior tree
     IsPlayerDetectedBBKeyID = 0;
     isPlayerPoweredUpBBKeyID = 0;
+    collectibleTargeted = FVector(0);
 
     m_behaviorTreeComponent = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BehaviorTreeComponent"));
     m_blackboardComponent = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackboardComponent"));
@@ -100,7 +101,8 @@ void ASDTAIController::MoveToRandomCollectible()
 
         if (!collectibleActor->IsOnCooldown())
         {
-            MoveToLocation(foundCollectibles[index]->GetActorLocation(), 0.5f, false, true, true, NULL, false);
+            collectibleTargeted = foundCollectibles[index]->GetActorLocation();
+            MoveToLocation(collectibleTargeted, 0.5f, false, true, true, NULL, false);
             OnMoveToTarget();
             return;
         }
@@ -490,7 +492,7 @@ bool ASDTAIController::ProcessDetectPlayer() {
 
     DrawDebugCapsule(GetWorld(), detectionStartLocation + m_DetectionCapsuleHalfLength * selfPawn->GetActorForwardVector(), m_DetectionCapsuleHalfLength, m_DetectionCapsuleRadius, selfPawn->GetActorQuat() * selfPawn->GetActorUpVector().ToOrientationQuat(), FColor::Blue);
 
-    return currentBehavior == PlayerInteractionBehavior::PlayerInteractionBehavior_Collect;
+    return (!currentBehavior == PlayerInteractionBehavior::PlayerInteractionBehavior_Collect);
 
 }
 
@@ -505,7 +507,7 @@ void ASDTAIController::StartBehaviorTree(APawn* pawn)
     {
         if (aiBaseCharacter->GetBehaviorTree())
         {
-            m_behaviorTreeComponent->StartTree(*aiBaseCharacter->GetBehaviorTree(), EBTExecutionMode::SingleRun);
+            m_behaviorTreeComponent->StartTree(*aiBaseCharacter->GetBehaviorTree(), EBTExecutionMode::Looped);
         }
     }
 }
@@ -532,7 +534,7 @@ void ASDTAIController::OnPossess(APawn* pawn)
             m_blackboardComponent->InitializeBlackboard(*aiBaseCharacter->GetBehaviorTree()->BlackboardAsset);
 
 
-            IsPlayerDetectedBBKeyID = m_blackboardComponent->GetKeyID("IsChasingOrFleeing");
+            IsPlayerDetectedBBKeyID = m_blackboardComponent->GetKeyID("IsPlayerDetected");
             isPlayerPoweredUpBBKeyID = m_blackboardComponent->GetKeyID("IsPlayerPoweredUp");
 
             //Set this agent in the BT

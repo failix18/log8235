@@ -11,9 +11,9 @@ EBTNodeResult::Type UBTTask_CollectPickUp::ExecuteTask(UBehaviorTreeComponent& O
 
 	if (ASDTAIController* aiController = Cast<ASDTAIController>(OwnerComp.GetAIOwner()))
 	{
+		if(aiController->m_ReachedTarget) {
 		aiController->MoveToRandomCollectible();
-		GEngine->AddOnScreenDebugMessage(-1, 12.f, FColor::Red, TEXT("ended MoveToRandomCollectible"));
-
+		}
 		return EBTNodeResult::Succeeded;
 	}
 	return EBTNodeResult::Failed;

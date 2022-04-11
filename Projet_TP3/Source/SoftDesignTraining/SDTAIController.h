@@ -118,4 +118,6 @@ private:
     uint8   IsPlayerDetectedBBKeyID;
     uint8   isPlayerPoweredUpBBKeyID;
 
+    FVector collectibleTargeted;
+
 };
