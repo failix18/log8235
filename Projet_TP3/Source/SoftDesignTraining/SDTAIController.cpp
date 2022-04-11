@@ -84,7 +84,7 @@ void ASDTAIController::GoToBestTarget(float deltaTime)
 
 void ASDTAIController::MoveToRandomCollectible()
 {
-    auto startTime = std::chrono::system_clock::now();
+    //auto startTime = std::chrono::system_clock::now();
     float closestSqrCollectibleDistance = 18446744073709551610.f;
     ASDTCollectible* closestCollectible = nullptr;
 
@@ -111,14 +111,14 @@ void ASDTAIController::MoveToRandomCollectible()
             foundCollectibles.RemoveAt(index);
         }
     }
-    auto stopTime = std::chrono::system_clock::now();
-    long duration = std::chrono::duration_cast<std::chrono::microseconds>(stopTime - startTime).count();
-    DrawDebugString(GetWorld(), FVector(0.f, 0.f, 10.f), "Collectible: " + FString::FromInt(duration) + " microseconds", GetPawn(), FColor::Blue, 5.f, false);
+    //auto stopTime = std::chrono::system_clock::now();
+    //long duration = std::chrono::duration_cast<std::chrono::microseconds>(stopTime - startTime).count();
+    //DrawDebugString(GetWorld(), FVector(0.f, 0.f, 10.f), "Collectible: " + FString::FromInt(duration) + " microseconds", GetPawn(), FColor::Blue, 0.4f, false);
 }
 
 void ASDTAIController::MoveToPlayer()
 {
-    auto startTime = std::chrono::system_clock::now();
+    //auto startTime = std::chrono::system_clock::now();
     ACharacter* playerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
     if (!playerCharacter)
         return;
@@ -140,9 +140,9 @@ void ASDTAIController::MoveToPlayer()
         MoveToLocation(randomDestination, 0.5f, false, true, true, NULL, false);
     }
 
-    auto stopTime = std::chrono::system_clock::now();
-    long duration = std::chrono::duration_cast<std::chrono::microseconds>(stopTime - startTime).count();
-    DrawDebugString(GetWorld(), FVector(0.f, 0.f, 10.f), "Player: " + FString::FromInt(duration) + " microseconds", GetPawn(), FColor::Blue, 5.f, false);
+    //auto stopTime = std::chrono::system_clock::now();
+    //long duration = std::chrono::duration_cast<std::chrono::microseconds>(stopTime - startTime).count();
+    //DrawDebugString(GetWorld(), FVector(0.f, 0.f, 10.f), "Player: " + FString::FromInt(duration) + " microseconds", GetPawn(), FColor::Blue, 0.4f, false);
 }
 
 void ASDTAIController::PlayerInteractionLoSUpdate()
@@ -174,7 +174,7 @@ void ASDTAIController::PlayerInteractionLoSUpdate()
         {
             GetWorld()->GetTimerManager().ClearTimer(m_PlayerInteractionNoLosTimer);
             m_PlayerInteractionNoLosTimer.Invalidate();
-            DrawDebugString(GetWorld(), FVector(0.f, 0.f, 10.f), "Got LoS", GetPawn(), FColor::Red, 5.f, false);
+            //DrawDebugString(GetWorld(), FVector(0.f, 0.f, 10.f), "Got LoS", GetPawn(), FColor::Red, 5.f, false);
         }
     }
     else
@@ -182,7 +182,7 @@ void ASDTAIController::PlayerInteractionLoSUpdate()
         if (!GetWorld()->GetTimerManager().IsTimerActive(m_PlayerInteractionNoLosTimer))
         {
             GetWorld()->GetTimerManager().SetTimer(m_PlayerInteractionNoLosTimer, this, &ASDTAIController::OnPlayerInteractionNoLosDone, 3.f, false);
-            DrawDebugString(GetWorld(), FVector(0.f, 0.f, 10.f), "Lost LoS", GetPawn(), FColor::Red, 5.f, false);
+            //DrawDebugString(GetWorld(), FVector(0.f, 0.f, 10.f), "Lost LoS", GetPawn(), FColor::Red, 5.f, false);
         }
     }
     
@@ -191,7 +191,7 @@ void ASDTAIController::PlayerInteractionLoSUpdate()
 void ASDTAIController::OnPlayerInteractionNoLosDone()
 {
     GetWorld()->GetTimerManager().ClearTimer(m_PlayerInteractionNoLosTimer);
-    DrawDebugString(GetWorld(), FVector(0.f, 0.f, 10.f), "TIMER DONE", GetPawn(), FColor::Red, 5.f, false);
+    //DrawDebugString(GetWorld(), FVector(0.f, 0.f, 10.f), "TIMER DONE", GetPawn(), FColor::Red, 5.f, false);
 
     if (!AtJumpSegment)
     {
@@ -202,7 +202,7 @@ void ASDTAIController::OnPlayerInteractionNoLosDone()
 
 void ASDTAIController::MoveToBestFleeLocation()
 {
-    auto startTime = std::chrono::system_clock::now();
+    //auto startTime = std::chrono::system_clock::now();
     float bestLocationScore = 0.f;
     ASDTFleeLocation* bestFleeLocation = nullptr;
 
@@ -232,7 +232,7 @@ void ASDTAIController::MoveToBestFleeLocation()
                 bestFleeLocation = fleeLocation;
             }
 
-            DrawDebugString(GetWorld(), FVector(0.f, 0.f, 10.f), FString::SanitizeFloat(locationScore), fleeLocation, FColor::Red, 5.f, false);
+            //DrawDebugString(GetWorld(), FVector(0.f, 0.f, 10.f), FString::SanitizeFloat(locationScore), fleeLocation, FColor::Red, 5.f, false);
         }
     }
 
@@ -241,9 +241,9 @@ void ASDTAIController::MoveToBestFleeLocation()
         MoveToLocation(bestFleeLocation->GetActorLocation(), 0.5f, false, true, false, NULL, false);
         OnMoveToTarget();
     }
-    auto stopTime = std::chrono::system_clock::now();
-    long duration = std::chrono::duration_cast<std::chrono::microseconds>(stopTime - startTime).count();
-    DrawDebugString(GetWorld(), FVector(0.f, 0.f, 10.f), "Flee: " + FString::FromInt(duration) + " microseconds", GetPawn(), FColor::Blue, 5.f, false);
+    //auto stopTime = std::chrono::system_clock::now();
+    //long duration = std::chrono::duration_cast<std::chrono::microseconds>(stopTime - startTime).count();
+    //DrawDebugString(GetWorld(), FVector(0.f, 0.f, 10.f), "Flee: " + FString::FromInt(duration) + " microseconds", GetPawn(), FColor::Blue, 0.4f, false);
 }
 
 void ASDTAIController::OnMoveToTarget()
@@ -346,7 +346,7 @@ void ASDTAIController::UpdatePlayerInteraction(float deltaTime)
         break;
     }
 
-    DrawDebugString(GetWorld(), FVector(0.f, 0.f, 5.f), debugString, GetPawn(), FColor::Orange, 0.f, false);
+    //DrawDebugString(GetWorld(), FVector(0.f, 0.f, 5.f), debugString, GetPawn(), FColor::Orange, 0.f, false);
 
     DrawDebugCapsule(GetWorld(), detectionStartLocation + m_DetectionCapsuleHalfLength * selfPawn->GetActorForwardVector(), m_DetectionCapsuleHalfLength, m_DetectionCapsuleRadius, selfPawn->GetActorQuat() * selfPawn->GetActorUpVector().ToOrientationQuat(), FColor::Blue);
 }
@@ -488,7 +488,7 @@ bool ASDTAIController::ProcessDetectPlayer() {
         break;
     }
 
-    DrawDebugString(GetWorld(), FVector(0.f, 0.f, 5.f), debugString, GetPawn(), FColor::Orange, 0.f, false);
+    //DrawDebugString(GetWorld(), FVector(0.f, 0.f, 5.f), debugString, GetPawn(), FColor::Orange, 0.f, false);
 
     DrawDebugCapsule(GetWorld(), detectionStartLocation + m_DetectionCapsuleHalfLength * selfPawn->GetActorForwardVector(), m_DetectionCapsuleHalfLength, m_DetectionCapsuleRadius, selfPawn->GetActorQuat() * selfPawn->GetActorUpVector().ToOrientationQuat(), FColor::Blue);
 
